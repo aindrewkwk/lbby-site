@@ -1,8 +1,10 @@
 // ── Nav scroll effect ──────────────────────────────────────────────
 const nav = document.getElementById('nav') || document.querySelector('.nav');
+const backToTop = document.getElementById('back-to-top');
 
 window.addEventListener('scroll', () => {
   if (nav) nav.classList.toggle('scrolled', window.scrollY > 50);
+  if (backToTop) backToTop.classList.toggle('visible', window.scrollY > 600);
 }, { passive: true });
 
 // ── Active nav link based on scroll position ───────────────────────
@@ -105,6 +107,8 @@ const LBBY_I18N = {
     "hero.subtitle": "Tạo và chạy máy chủ Minecraft Java mà không cần mở cổng mạng, dùng dòng lệnh hay cấu hình router. Cài đặt, quản lý và chia sẻ — tất cả trong một ứng dụng máy tính.",
     "hero.download": `${DOWNLOAD_ICON} Tải miễn phí`,
     "hero.learn": "Tìm hiểu thêm",
+    "preview.mods": "Modpack, tunnel, người chơi",
+    "preview.zero": "Không cần mở cổng mạng",
     "features.label": "Tính năng",
     "features.title": "Tất cả những gì bạn cần",
     "features.subtitle": "Từ con số không đến máy chủ đang chạy chỉ trong chưa đầy một phút. Không cần terminal, không cần file cấu hình, không phiền phức.",
@@ -126,6 +130,20 @@ const LBBY_I18N = {
     "feature.console.body": "Console máy chủ thời gian thực với ô nhập lệnh. Theo dõi player, TPS, RAM, CPU và disk từ dashboard.",
     "feature.theme.title": "Chế độ sáng & tối",
     "feature.theme.body": "Giao diện đẹp với theme sáng/tối. Hỗ trợ tiếng Anh và tiếng Việt.",
+    "showcase.title": "Bảng tổng quan",
+    "showcase.lead": "Panel quản lý trực quan, cài đặt mod/plugin, backup/restore tự động.",
+    "showcase.bullet1": "Giao diện thân thiện người dùng.",
+    "showcase.bullet2": "Cài đặt mod, plugin và modpack.",
+    "showcase.bullet3": "Gia hạn, nâng cấp tài nguyên và quản lý máy chủ dễ dàng.",
+    "showcase.bullet4": "Tất cả những thứ bạn cần để tạo một máy chủ Minecraft <span class=\"showcase-highlight\">đều có sẵn</span>.",
+    "screenshots.label": "Ảnh chụp",
+    "screenshots.title": "Xem trực tiếp",
+    "screenshots.player.title": "Bảng điều khiển Minecraft",
+    "screenshots.player.desc": "Quản lý nhiều người chơi dễ dàng trên máy chủ Minecraft của bạn.",
+    "screenshots.playit.title": "Tích hợp Playit.gg",
+    "screenshots.playit.desc": "Dễ dàng tạo địa chỉ Server công khai — không cần mở cổng mạng.",
+    "screenshots.mods.title": "Hỗ trợ toàn bộ Mod, Mod Pack",
+    "screenshots.mods.desc": "Cài đặt tự động, nhanh gọn và dễ sử dụng.",
     "download.label": "Tải về",
     "download.title": "Tải Lbby",
     "download.subtitle": "Miễn phí sử dụng. Có sẵn cho Windows, macOS và Linux.",
@@ -219,6 +237,8 @@ const LBBY_I18N = {
     "hero.subtitle": "Host Minecraft Java servers without port forwarding, command-line work, or router configuration. Install, manage, and share — all from one native app.",
     "hero.download": `${DOWNLOAD_ICON} Download Free`,
     "hero.learn": "Learn More",
+    "preview.mods": "Modpacks, tunnels, players",
+    "preview.zero": "No port forwarding",
     "features.label": "Features",
     "features.title": "Everything you need",
     "features.subtitle": "From zero to a running server in under a minute. No terminal, no config files, no headaches.",
@@ -240,6 +260,20 @@ const LBBY_I18N = {
     "feature.console.body": "Real-time server console with command input. Monitor players, TPS, RAM, CPU, and disk from the dashboard.",
     "feature.theme.title": "Dark & Light Mode",
     "feature.theme.body": "Beautiful UI with dark and light themes. English and Vietnamese language support.",
+    "showcase.title": "Dashboard",
+    "showcase.lead": "An intuitive control panel with mod/plugin management, automatic backup/restore, and everything you need.",
+    "showcase.bullet1": "Clean, user-friendly interface.",
+    "showcase.bullet2": "Install mods, plugins, and modpacks.",
+    "showcase.bullet3": "Upgrade resources and manage servers easily.",
+    "showcase.bullet4": "Everything you need to create a Minecraft server <span class=\"showcase-highlight\">is built in</span>.",
+    "screenshots.label": "Screenshots",
+    "screenshots.title": "See it in action",
+    "screenshots.player.title": "Player Management",
+    "screenshots.player.desc": "Manage multiple players easily on your Minecraft server.",
+    "screenshots.playit.title": "Playit.gg Integration",
+    "screenshots.playit.desc": "Easily create a public server address — no port forwarding needed.",
+    "screenshots.mods.title": "Full Mod & Modpack Support",
+    "screenshots.mods.desc": "Automatic installation — fast and easy to use.",
     "download.label": "Download",
     "download.title": "Get Lbby",
     "download.subtitle": "Free to use. Available for Windows, macOS, and Linux.",

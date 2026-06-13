@@ -17,7 +17,7 @@
       <img src="assets/lbby-r-studio.png" alt="R Studio">
       <span>R Studio</span>
     </a>
-    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">☰</button>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">&#9776;</button>
     <div class="nav-links">
       <a href="#features" data-i18n="nav.features">Features</a>
       <a href="#download" data-i18n="nav.download">Download</a>
@@ -35,8 +35,9 @@
     <div class="hero-content">
       <img src="assets/lbby-logo-white.png" alt="Lbby" class="hero-logo">
       <div class="studio-badge" data-i18n="hero.badge">by R Studio</div>
+      <div class="hero-kicker">Lbby Minecraft</div>
       <h1 data-i18n-html="hero.title">Minecraft servers<br><span class="gradient">made simple</span></h1>
-      <p data-i18n="hero.subtitle">Host Minecraft Java servers without port forwarding, command-line work, or router configuration. Install, manage, and share — all from one native app.</p>
+      <p class="hero-description" data-i18n="hero.subtitle">Host Minecraft Java servers without port forwarding, command-line work, or router configuration. Install, manage, and share — all from one native app.</p>
       <div class="hero-buttons">
         <a href="#download" class="btn btn-primary" data-i18n-html="hero.download">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -44,88 +45,152 @@
         </a>
         <a href="#features" class="btn btn-secondary" data-i18n="hero.learn">Learn More</a>
       </div>
-      <p style="font-size: 13px; color: var(--text-faint); margin-top: 18px;">v0.2.3 · Windows · macOS · Linux</p>
+      <p class="hero-version">v0.2.3 &middot; Windows &middot; macOS &middot; Linux</p>
+
+      <div class="hero-product-preview" aria-label="Lbby app preview">
+        <img src="assets/dashboard.png" alt="Lbby dashboard preview">
+        <div class="preview-pill preview-pill-left" data-i18n="preview.mods">Modpacks, tunnels, players</div>
+        <div class="preview-pill preview-pill-right" data-i18n="preview.zero">No port forwarding</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dashboard Showcase -->
+  <section class="section section-dark" id="showcase">
+    <div class="container">
+      <div class="showcase-split anim-stagger">
+        <div class="anim-fade-up">
+          <div class="showcase-heading">
+            <div class="showcase-icon">&#128295;</div>
+            <h2 data-i18n="showcase.title">Dashboard</h2>
+          </div>
+          <p class="showcase-lead" data-i18n="showcase.lead">
+            An intuitive control panel with mod/plugin management, automatic backup/restore, and everything you need.
+          </p>
+          <ul class="showcase-bullets">
+            <li data-i18n="showcase.bullet1">Clean, user-friendly interface.</li>
+            <li data-i18n="showcase.bullet2">Install mods, plugins, and modpacks.</li>
+            <li data-i18n="showcase.bullet3">Upgrade resources and manage servers easily.</li>
+            <li data-i18n-html="showcase.bullet4">Everything you need to create a Minecraft server <span class="showcase-highlight">is built in</span>.</li>
+          </ul>
+        </div>
+        <div class="showcase-image anim-fade-up">
+          <img src="assets/dashboard.png" alt="Lbby Dashboard">
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- Features -->
-  <section class="section" id="features">
-    <div class="section-header anim-fade-up">
-      <div class="label" data-i18n="features.label">Features</div>
-      <h2 data-i18n="features.title">Everything you need</h2>
-      <p data-i18n="features.subtitle">From zero to a running server in under a minute. No terminal, no config files, no headaches.</p>
+  <section class="section section-darker" id="features">
+    <div class="container">
+      <div class="section-header anim-fade-up">
+        <div class="label" data-i18n="features.label">Features</div>
+        <h2 data-i18n="features.title">Everything you need</h2>
+        <p data-i18n="features.subtitle">From zero to a running server in under a minute. No terminal, no config files, no headaches.</p>
+      </div>
+      <div class="features-grid anim-stagger">
+        <div class="feature-card anim-fade-up">
+          <div class="feature-icon">&#127922;</div>
+          <h3 data-i18n="feature.server.title">11 Server Types</h3>
+          <p data-i18n="feature.server.body">Vanilla, Paper, Folia, Purpur, Bukkit, Spigot, Forge, Fabric, NeoForge, SpongeVanilla, and SpongeForge — all from a guided setup wizard.</p>
+        </div>
+        <div class="feature-card anim-fade-up">
+          <div class="feature-icon">&#127760;</div>
+          <h3 data-i18n="feature.play.title">Play Anywhere</h3>
+          <p data-i18n="feature.play.body">Built-in playit.gg tunnel so friends can join from anywhere. No port forwarding or static IP needed.</p>
+        </div>
+        <div class="feature-card anim-fade-up">
+          <div class="feature-icon">&#128190;</div>
+          <h3 data-i18n="feature.backups.title">Backups</h3>
+          <p data-i18n="feature.backups.body">Create ZIP backups, restore from backups, and schedule automatic backups. Never lose your world again.</p>
+        </div>
+        <div class="feature-card anim-fade-up">
+          <div class="feature-icon">&#128101;</div>
+          <h3 data-i18n="feature.players.title">Player Management</h3>
+          <p data-i18n="feature.players.body">View player inventory, health, XP, effects. Kill, heal, freeze, gamemode, give items — full admin control.</p>
+        </div>
+        <div class="feature-card anim-fade-up">
+          <div class="feature-icon">&#128187;</div>
+          <h3 data-i18n="feature.console.title">Live Console</h3>
+          <p data-i18n="feature.console.body">Real-time server console with command input. Monitor players, TPS, RAM, CPU, and disk from the dashboard.</p>
+        </div>
+        <div class="feature-card anim-fade-up">
+          <div class="feature-icon">&#9889;</div>
+          <h3 data-i18n="feature.performance.title">Performance</h3>
+          <p data-i18n="feature.performance.body">JVM optimization presets, TPS monitoring, chunk pre-generation, and customizable dashboard with live ring meters.</p>
+        </div>
+        <div class="feature-card anim-fade-up">
+          <div class="feature-icon">&#128225;</div>
+          <h3 data-i18n="feature.remote.title">Remote Control</h3>
+          <p data-i18n="feature.remote.body">Manage your server from your phone or another PC. LAN + Cloudflare Quick Tunnel with secure token authentication.</p>
+        </div>
+        <div class="feature-card anim-fade-up">
+          <div class="feature-icon">&#128230;</div>
+          <h3 data-i18n="feature.mods.title">Mods & Plugins</h3>
+          <p data-i18n="feature.mods.body">Browse Modrinth, install mods & plugins, modpack support (Modrinth + CurseForge), and automatic update checker.</p>
+        </div>
+        <div class="feature-card anim-fade-up">
+          <div class="feature-icon">&#127912;</div>
+          <h3 data-i18n="feature.theme.title">Dark & Light Mode</h3>
+          <p data-i18n="feature.theme.body">Beautiful UI with dark and light themes. English and Vietnamese language support.</p>
+        </div>
+      </div>
     </div>
-    <div class="features-grid anim-stagger">
-      <div class="feature-card anim-fade-up">
-        <div class="feature-icon">🧩</div>
-        <h3 data-i18n="feature.server.title">11 Server Types</h3>
-        <p data-i18n="feature.server.body">Vanilla, Paper, Folia, Purpur, Bukkit, Spigot, Forge, Fabric, NeoForge, SpongeVanilla, and SpongeForge — all from a guided setup wizard.</p>
+  </section>
+
+  <!-- Screenshots -->
+  <section class="section section-darker" id="screenshots">
+    <div class="container">
+      <div class="section-header anim-fade-up">
+        <div class="label" data-i18n="screenshots.label">Screenshots</div>
+        <h2 data-i18n="screenshots.title">See it in action</h2>
       </div>
-      <div class="feature-card anim-fade-up">
-        <div class="feature-icon">🌐</div>
-        <h3 data-i18n="feature.play.title">Play Anywhere</h3>
-        <p data-i18n="feature.play.body">Built-in playit.gg tunnel so friends can join from anywhere. No port forwarding or static IP needed.</p>
-      </div>
-      <div class="feature-card anim-fade-up">
-        <div class="feature-icon">👥</div>
-        <h3 data-i18n="feature.players.title">Player Management</h3>
-        <p data-i18n="feature.players.body">View player inventory, health, XP, effects. Kill, heal, freeze, gamemode, give items — full admin control.</p>
-      </div>
-      <div class="feature-card anim-fade-up">
-        <div class="feature-icon">📦</div>
-        <h3 data-i18n="feature.mods.title">Mods & Plugins</h3>
-        <p data-i18n="feature.mods.body">Browse Modrinth, install mods & plugins, modpack support (Modrinth + CurseForge), and automatic update checker.</p>
-      </div>
-      <div class="feature-card anim-fade-up">
-        <div class="feature-icon">📡</div>
-        <h3 data-i18n="feature.remote.title">Remote Control</h3>
-        <p data-i18n="feature.remote.body">Manage your server from your phone or another PC. LAN + Cloudflare Quick Tunnel with secure token authentication.</p>
-      </div>
-      <div class="feature-card anim-fade-up">
-        <div class="feature-icon">💾</div>
-        <h3 data-i18n="feature.backups.title">Backups</h3>
-        <p data-i18n="feature.backups.body">Create ZIP backups, restore from backups, and schedule automatic backups. Never lose your world again.</p>
-      </div>
-      <div class="feature-card anim-fade-up">
-        <div class="feature-icon">⚡</div>
-        <h3 data-i18n="feature.performance.title">Performance</h3>
-        <p data-i18n="feature.performance.body">JVM optimization presets, TPS monitoring, chunk pre-generation, and customizable dashboard with live ring meters.</p>
-      </div>
-      <div class="feature-card anim-fade-up">
-        <div class="feature-icon">🖥️</div>
-        <h3 data-i18n="feature.console.title">Live Console</h3>
-        <p data-i18n="feature.console.body">Real-time server console with command input. Monitor players, TPS, RAM, CPU, and disk from the dashboard.</p>
-      </div>
-      <div class="feature-card anim-fade-up">
-        <div class="feature-icon">🎨</div>
-        <h3 data-i18n="feature.theme.title">Dark & Light Mode</h3>
-        <p data-i18n="feature.theme.body">Beautiful UI with dark and light themes. English and Vietnamese language support.</p>
+      <div class="screenshot-list">
+        <article class="shot-card anim-fade-up">
+          <img src="assets/manager-player.png" alt="Player Management">
+          <div class="shot-label">
+            <h3 data-i18n="screenshots.player.title">Player Management</h3>
+            <p data-i18n="screenshots.player.desc">Manage multiple players easily on your Minecraft server.</p>
+          </div>
+        </article>
+        <article class="shot-card anim-fade-up">
+          <img src="assets/connect-world.png" alt="Playit.gg Integration">
+          <div class="shot-label">
+            <h3 data-i18n="screenshots.playit.title">Playit.gg Integration</h3>
+            <p data-i18n="screenshots.playit.desc">Easily create a public server address — no port forwarding needed.</p>
+          </div>
+        </article>
+        <article class="shot-card anim-fade-up">
+          <img src="assets/automodpack.png" alt="Modpack Support">
+          <div class="shot-label">
+            <h3 data-i18n="screenshots.mods.title">Full Mod & Modpack Support</h3>
+            <p data-i18n="screenshots.mods.desc">Automatic installation — fast and easy to use.</p>
+          </div>
+        </article>
       </div>
     </div>
   </section>
 
   <!-- Download -->
-  <section class="section" id="download">
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 28px; padding: 64px 48px; max-width: 960px; margin: 0 auto;">
-      <div class="section-header anim-fade-up" style="margin-bottom: 36px;">
-        <div class="label" data-i18n="download.label">Download</div>
-        <h2 data-i18n="download.title">Get Lbby</h2>
-        <p data-i18n="download.subtitle">Free to use. Available for Windows, macOS, and Linux.</p>
-      </div>
+  <section class="section section-darker" id="download">
+    <div class="download-panel">
+      <h2 data-i18n="download.title">Get Lbby</h2>
+      <p class="subtitle" data-i18n="download.subtitle">Free to use. Available for Windows, macOS, and Linux.</p>
       <div class="download-cards anim-stagger" id="download-cards">
         <div class="download-card anim-fade-up"><p class="text-muted" data-i18n="download.loading">Loading releases...</p></div>
       </div>
       <div style="text-align: center; margin-top: 28px;">
         <a href="https://github.com/aindrewkwk/lbby-releases/releases" target="_blank" class="btn btn-secondary btn-sm" data-i18n="download.all">View All Releases on GitHub</a>
       </div>
-      <div data-i18n-html="download.beta" style="margin-top: 24px; padding: 16px 20px; background: var(--yellow-bg); border: 1px solid var(--yellow-border); border-radius: var(--radius-sm); font-size: 13px; color: var(--text-muted); text-align: center;">
-        <strong style="color: var(--yellow);">⚠ Beta:</strong> The app is unsigned. On macOS: right-click → Open → Open. On Windows: More info → Run anyway.
+      <div class="beta-warning" data-i18n-html="download.beta">
+        <strong style="color: var(--yellow);">&#9888; Beta:</strong> The app is unsigned. On macOS: right-click &rarr; Open &rarr; Open. On Windows: More info &rarr; Run anyway.
       </div>
     </div>
   </section>
 
   <!-- Docs -->
-  <section class="section" id="docs" style="padding-top: 40px;">
+  <section class="section section-dark" id="docs" style="padding-top: 40px;">
     <div class="section-header anim-fade-up">
       <div class="label" data-i18n="docs.label">Documentation</div>
       <h2 data-i18n="docs.title">Getting Started</h2>
@@ -154,7 +219,7 @@
           <li data-i18n-html="docs.quick.8">Open the <strong>Tunnel</strong> tab and start playit.gg</li>
           <li data-i18n="docs.quick.9">Share the public tunnel address with friends</li>
         </ol>
-        <p data-i18n-html="docs.quick.done"><strong>That's it:</strong> install → start → tunnel → share.</p>
+        <p data-i18n-html="docs.quick.done"><strong>That's it:</strong> install &rarr; start &rarr; tunnel &rarr; share.</p>
 
         <h3 id="docs-server-types" data-i18n="docs.types.title">Server Types</h3>
         <p data-i18n="docs.types.intro">Lbby supports 11 server types:</p>
@@ -196,9 +261,9 @@
 
         <h3 id="docs-performance" data-i18n="docs.performance.title">Performance Tips</h3>
         <ul>
-          <li data-i18n-html="docs.performance.1">Use <strong>Settings → Performance → Low CPU</strong> if CPU spikes</li>
+          <li data-i18n-html="docs.performance.1">Use <strong>Settings &rarr; Performance &rarr; Low CPU</strong> if CPU spikes</li>
           <li data-i18n-html="docs.performance.2">Keep <strong>Optimized JVM flags</strong> enabled</li>
-          <li data-i18n-html="docs.performance.3">Lower <strong>View Distance</strong> to 6–8</li>
+          <li data-i18n-html="docs.performance.3">Lower <strong>View Distance</strong> to 6&ndash;8</li>
           <li data-i18n-html="docs.performance.4">Use <strong>Pre-generate Chunks</strong> before players explore far</li>
         </ul>
 
@@ -214,7 +279,7 @@
   </section>
 
   <!-- Changelog -->
-  <section class="section" id="changelog">
+  <section class="section section-dark" id="changelog">
     <div class="section-header anim-fade-up">
       <div class="label" data-i18n="changelog.label">Changelog</div>
       <h2 data-i18n="changelog.title">What's new</h2>
@@ -230,8 +295,12 @@
 
   <!-- Footer -->
   <footer class="footer">
+    <div class="footer-line"></div>
     <p data-i18n="footer.copy">&copy; 2026 R Studio. All rights reserved.</p>
   </footer>
+
+  <!-- Back to Top -->
+  <a href="#hero" class="back-to-top" id="back-to-top">&#8593;</a>
 
   <script src="js/main.js"></script>
   <script src="js/releases.js"></script>
