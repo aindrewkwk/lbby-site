@@ -6,6 +6,7 @@
   <title>License Generator — R Studio</title>
   <meta name="description" content="Lbby License Generator by R Studio. Generate and manage license keys.">
   <link rel="icon" href="assets/lbby-app-icon-square.png" type="image/png">
+  <link rel="stylesheet" href="css/design-system.css">
   <link rel="stylesheet" href="css/style.css">
   <style>
     .license-container { max-width: 900px; margin: 0 auto; padding: 100px 24px 60px; }
@@ -13,18 +14,18 @@
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
     .form-group { display: flex; flex-direction: column; gap: 4px; }
     .form-group label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-    .form-group input, .form-group select { padding: 10px 14px; background: rgba(0,0,0,0.35); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 14px; font-family: inherit; outline: none; }
+    .form-group input, .form-group select { padding: 10px 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 14px; font-family: inherit; outline: none; }
     .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
     .expiry-presets { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
-    .expiry-presets button { padding: 4px 10px; font-size: 11px; background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: 6px; color: var(--text-muted); cursor: pointer; }
-    .expiry-presets button:hover { background: rgba(255,255,255,0.12); color: var(--text); }
-    .output-area { background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; word-break: break-all; min-height: 60px; color: var(--text-muted); margin-bottom: 12px; }
+    .expiry-presets button { padding: 4px 10px; font-size: 11px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 6px; color: var(--text-muted); cursor: pointer; }
+    .expiry-presets button:hover { border-color: var(--border-hover); color: var(--text); }
+    .output-area { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; word-break: break-all; min-height: 60px; color: var(--text-muted); margin-bottom: 12px; }
     .status-msg { font-size: 13px; padding: 8px 12px; border-radius: var(--radius-sm); margin-bottom: 12px; display: none; }
-    .status-msg.success { display: block; color: var(--green); background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.3); }
-    .status-msg.error { display: block; color: var(--red); background: rgba(251,113,133,0.08); border: 1px solid rgba(251,113,133,0.3); }
+    .status-msg.success { display: block; color: var(--green); background: var(--green-bg); border: 1px solid var(--green-border); }
+    .status-msg.error { display: block; color: var(--red); background: var(--red-bg); border: 1px solid var(--red-border); }
     .history-table { width: 100%; font-size: 13px; border-collapse: collapse; }
     .history-table th { text-align: left; padding: 8px 12px; color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
-    .history-table td { padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .history-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
     @media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -38,12 +39,11 @@
     </a>
     <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">☰</button>
     <div class="nav-links">
-      <a href="#features">Features</a>
-      <a href="#download">Download</a>
-      <a href="#docs">Docs</a>
-      <a href="#changelog">Changelog</a>
+      <a href="index.html#features">Features</a>
+      <a href="index.html#download">Download</a>
+      <a href="index.html#docs">Docs</a>
+      <a href="index.html#changelog">Changelog</a>
       <a href="license.html" class="active">License</a>
-      <a href="#contact">Contact</a>
     </div>
   </nav>
 
@@ -56,7 +56,7 @@
       <div style="margin-bottom: 16px;">
         <input type="password" id="passwordInput" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPassword()" style="
           width: 100%; padding: 14px 18px;
-          background: rgba(0, 0, 0, 0.35);
+          background: var(--bg-card);
           border: 1px solid var(--border);
           border-radius: var(--radius-sm);
           color: var(--text); font-size: 16px;
@@ -93,7 +93,7 @@
         <div id="importKeyArea" style="display: none; margin-bottom: 12px;">
           <textarea id="importKeyInput" placeholder="Paste your PEM private key here..." style="
             width: 100%; min-height: 80px; padding: 12px;
-            background: rgba(0,0,0,0.35); border: 1px solid var(--border);
+            background: var(--bg-card); border: 1px solid var(--border);
             border-radius: var(--radius-sm); color: var(--text);
             font-family: ui-monospace, monospace; font-size: 11px;
             outline: none; resize: vertical; word-break: break-all;
@@ -171,7 +171,7 @@
           <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;">
             <input type="checkbox" id="bindDevice"> Bind to device
           </label>
-          <input type="text" id="deviceId" placeholder="Device fingerprint" style="flex: 1; padding: 8px 12px; background: rgba(0,0,0,0.35); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 13px; font-family: inherit; outline: none;">
+          <input type="text" id="deviceId" placeholder="Device fingerprint" style="flex: 1; padding: 8px 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 13px; font-family: inherit; outline: none;">
         </div>
 
         <button class="btn btn-primary" onclick="generateLicense()" style="width: 100%; justify-content: center;">Generate License Key</button>
@@ -193,7 +193,7 @@
         <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">🔍 Decode JWT</h3>
         <textarea id="decodeInput" placeholder="Paste a JWT to decode..." style="
           width: 100%; min-height: 60px; padding: 12px;
-          background: rgba(0,0,0,0.35); border: 1px solid var(--border);
+          background: var(--bg-card); border: 1px solid var(--border);
           border-radius: var(--radius-sm); color: var(--text);
           font-family: ui-monospace, monospace; font-size: 11px;
           outline: none; resize: vertical; word-break: break-all;
