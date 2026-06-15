@@ -1,0 +1,5 @@
+Contact: mailto:aindrewkwk@gmail.com
+Expires: 2027-06-15T00:00:00.000Z
+Acknowledgments: https://github.com/aindrewkwk
+Policy: https://github.com/aindrewkwk/lbby-site/security/policy
+Preferred-Languages: en, vi
