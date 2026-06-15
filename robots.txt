@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /license.html
+Disallow: /js/
+Disallow: /css/
+
+Sitemap: https://lbby.rstudio.live/sitemap.xml
