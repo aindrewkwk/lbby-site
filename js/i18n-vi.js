@@ -21,7 +21,7 @@ var LBBY_I18N_VI = {
   },
 
   hero: {
-    eyebrow: 'Miễn phí & mã nguồn mở',
+    eyebrow: 'Lbby bởi R Studio',
     headline: 'Máy chủ game, đơn giản hơn bao giờ hết.',
     sub: 'Tạo và quản lý máy chủ game mà không cần port forwarding, dòng lệnh hay cấu hình router. Minecraft Java đã sẵn sàng, Terraria đang được phát triển.',
     'cta.download': 'Tải miễn phí',
@@ -240,8 +240,8 @@ var LBBY_I18N_VI = {
 
   license: {
     label: 'Giấy phép',
-    title: 'Miễn phí & Mã nguồn mở',
-    desc: 'Lbby được cấp phép theo giấy phép MIT. Bạn được tự do sử dụng, sửa đổi và phân phối. Xem toàn bộ văn bản giấy phép trên GitHub.'
+    title: 'Giấy phép',
+    desc: 'Xem giấy phép để biết điều khoản và điều kiện.'
   },
 
   footer: {

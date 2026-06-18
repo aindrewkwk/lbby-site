@@ -21,7 +21,7 @@ var LBBY_I18N_EN = {
   },
 
   hero: {
-    eyebrow: 'Free & open-source',
+    eyebrow: 'Lbby by R Studio',
     headline: 'Game servers made simple.',
     sub: 'Create and manage game servers without port forwarding, command lines, or router configuration. Minecraft Java is ready now, Terraria is coming soon.',
     'cta.download': 'Download Free',
@@ -240,8 +240,8 @@ var LBBY_I18N_EN = {
 
   license: {
     label: 'License',
-    title: 'Free & Open Source',
-    desc: 'Lbby is licensed under the MIT License. You are free to use, modify, and distribute it. See the full license text on GitHub.'
+    title: 'License',
+    desc: 'See the license for terms and conditions.'
   },
 
   footer: {
