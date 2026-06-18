@@ -1,308 +1,489 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lbby — Minecraft Server Host by R Studio</title>
-  <meta name="description" content="Lbby — A modern Minecraft server host. Install, manage, and share — all from one native app. No port forwarding, no terminal.">
-  <link rel="icon" href="assets/lbby-app-icon-square.png" type="image/png">
-  <link rel="stylesheet" href="css/design-system.css">
-  <link rel="stylesheet" href="css/style.css">
+  <title>Lbby — Game Server Hosting by R Studio</title>
+  <meta name="description" content="Lbby is a free game server hosting app by R Studio. Host and manage servers without port forwarding, terminal commands, or router configuration. Minecraft Java is available now, with Terraria coming soon.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://lbby.rstudio.live">
+  <meta property="og:title" content="Lbby — Game Server Hosting by R Studio">
+  <meta property="og:description" content="Lbby is a free game server hosting app by R Studio. Host and manage servers without port forwarding, terminal commands, or router configuration.">
+  <meta property="og:image" content="https://lbby.rstudio.live/assets/og-image.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="vi_VN">
+  <link rel="icon" id="favicon" href="/assets/lbby-app-icon-square.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <script>
+    (function() {
+      try {
+        var t = localStorage.getItem('lbby-theme');
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch(e) {}
+    })();
+  </script>
 </head>
 <body>
 
-  <!-- Nav -->
+  <!-- ══════════════════════════════════════════════════════════════
+       NAVIGATION
+       ══════════════════════════════════════════════════════════════ -->
   <nav class="nav" id="nav">
-    <a href="https://rstudio.live" class="nav-brand">
-      <img src="assets/lbby-r-studio.png" alt="R Studio">
-      <span>R Studio</span>
-    </a>
-    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">&#9776;</button>
-    <div class="nav-links">
-      <a href="#features" data-i18n="nav.features">Features</a>
-      <a href="#download" data-i18n="nav.download">Download</a>
-      <a href="#docs" data-i18n="nav.docs">Docs</a>
-      <a href="#changelog" data-i18n="nav.changelog">Changelog</a>
-      <a href="license.html" data-i18n="nav.license">License</a>
-      <button class="lang-toggle" onclick="toggleLang()" title="Switch language">
-        <span id="lang-label">VI</span>
+    <div class="nav__inner">
+      <a href="/" class="nav__logo">
+        <img src="/assets/lbby-app-icon-square.png" alt="Lbby" width="24" height="24">
+        <span>Lbby</span>
+      </a>
+      <div class="nav__links">
+        <a href="#games" class="nav__link" data-i18n="nav.games">Games</a>
+        <a href="#features" class="nav__link" data-i18n="nav.features">Features</a>
+        <a href="#download" class="nav__link" data-i18n="nav.download">Download</a>
+        <a href="#docs" class="nav__link" data-i18n="nav.docs">Docs</a>
+        <a href="#changelog" class="nav__link" data-i18n="nav.changelog">Changelog</a>
+        <a href="#license" class="nav__link" data-i18n="nav.license">License</a>
+      </div>
+      <div class="nav__toggles">
+        <a href="https://rstudio.live" class="nav__link nav__link--brand">R Studio</a>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode">
+          <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="lang-toggle" id="lang-toggle" aria-label="Switch language">
+          <span class="lang-label" data-i18n="lang.toggle">VI</span>
+        </button>
+      </div>
+      <button class="nav__hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
       </button>
     </div>
   </nav>
+  <div class="nav__dropdown" id="nav-dropdown">
+    <a href="#games" data-i18n="nav.games">Games</a>
+    <a href="#features" data-i18n="nav.features">Features</a>
+    <a href="#download" data-i18n="nav.download">Download</a>
+    <a href="#docs" data-i18n="nav.docs">Docs</a>
+    <a href="#changelog" data-i18n="nav.changelog">Changelog</a>
+    <a href="#license" data-i18n="nav.license">License</a>
+    <div class="nav__dropdown-toggles">
+      <a href="https://rstudio.live" class="nav__link nav__link--brand">R Studio</a>
+      <button class="theme-toggle" aria-label="Switch theme" onclick="document.getElementById('theme-toggle').click()">
+        <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>
+        <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="lang-toggle" onclick="document.getElementById('lang-toggle').click()">
+        <span class="lang-label" data-i18n="lang.toggle">VI</span>
+      </button>
+    </div>
+  </div>
 
-  <!-- Hero -->
+  <!-- ══════════════════════════════════════════════════════════════
+       HERO
+       ══════════════════════════════════════════════════════════════ -->
   <section class="hero" id="hero">
-    <div class="hero-content">
-      <img src="assets/lbby-logo-white.png" alt="Lbby" class="hero-logo">
-      <div class="studio-badge" data-i18n="hero.badge">by R Studio</div>
-      <div class="hero-kicker">Lbby Minecraft</div>
-      <h1 data-i18n-html="hero.title">Minecraft servers<br><span class="gradient">made simple</span></h1>
-      <p class="hero-description" data-i18n="hero.subtitle">Host Minecraft Java servers without port forwarding, command-line work, or router configuration. Install, manage, and share — all from one native app.</p>
-      <div class="hero-buttons">
-        <a href="#download" class="btn btn-primary" data-i18n-html="hero.download">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download Free
-        </a>
-        <a href="#features" class="btn btn-secondary" data-i18n="hero.learn">Learn More</a>
+    <canvas class="hero__canvas" id="ascii-bg"></canvas>
+    <div class="hero__content">
+      <p class="hero__eyebrow" data-i18n="hero.eyebrow">Lbby by R Studio</p>
+      <h1 class="hero__headline" data-i18n="hero.headline">Game servers made simple.</h1>
+      <p class="hero__sub" data-i18n="hero.sub">Host and manage game servers without port forwarding, command-line work, or router configuration. Minecraft Java is available now, with Terraria support on the way.</p>
+      <div class="hero__buttons">
+        <a href="#download" class="btn btn--primary" data-i18n="hero.cta.download">Download Free</a>
+        <a href="#games" class="btn btn--secondary" data-i18n="hero.cta.games">View Supported Games</a>
       </div>
-      <p class="hero-version">v0.2.5 &middot; Windows &middot; macOS &middot; Linux</p>
+      <div class="hero__meta">
+        <span class="hero__meta-item">Windows · macOS · Linux</span>
+        <span class="hero__meta-divider">·</span>
+        <span class="hero__meta-item" data-i18n="hero.meta.minecraft">Minecraft Java — Available now</span>
+        <span class="hero__meta-divider">·</span>
+        <span class="hero__meta-item" data-i18n="hero.meta.terraria">Terraria — Coming soon</span>
+        <span class="hero__meta-divider">·</span>
+        <span class="hero__meta-item" data-i18n="hero.meta.nopf">No port forwarding</span>
+        <span class="hero__meta-divider">·</span>
+        <span class="hero__meta-item" data-i18n="hero.meta.native">Native app</span>
+        <span class="hero__meta-divider">·</span>
+        <span class="hero__meta-item" data-i18n="hero.meta.rstudio">Built by R Studio</span>
+      </div>
+    </div>
+    <div class="hero__strip" aria-hidden="true">
+      <span>LBBY</span><span>·</span><span>R STUDIO</span><span>·</span><span>GAME SERVER</span><span>·</span><span>HOSTING</span><span>·</span><span>MINECRAFT</span><span>·</span><span>TERRARIA</span><span>·</span><span>MULTIGAME</span><span>·</span><span>NO PORT FORWARDING</span><span>·</span><span>SIMPLE</span><span>·</span><span>HOST</span><span>·</span><span>PLAY</span>
+    </div>
+  </section>
 
-      <div class="hero-product-preview" aria-label="Lbby app preview">
-        <img src="assets/dashboard.png" alt="Lbby dashboard preview">
-        <div class="preview-pill preview-pill-left" data-i18n="preview.mods">Modpacks, tunnels, players</div>
-        <div class="preview-pill preview-pill-right" data-i18n="preview.zero">No port forwarding</div>
+  <!-- ══════════════════════════════════════════════════════════════
+       SUPPORTED GAMES
+       ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="games">
+    <div class="section__header reveal">
+      <p class="section-label" data-i18n="games.label">Supported Games</p>
+      <h2 class="section-title" data-i18n="games.title">Start with Minecraft Java. More game servers are on the way.</h2>
+    </div>
+    <div class="games__grid reveal">
+      <div class="game-card">
+        <div class="game-card__index">01</div>
+        <div class="game-card__header">
+          <h3 class="game-card__title" data-i18n="games.minecraft.title">Minecraft Java</h3>
+          <span class="game-card__status game-card__status--available" data-i18n="games.minecraft.status">Available now</span>
+        </div>
+        <p class="game-card__desc" data-i18n="games.minecraft.desc">Fully developed hosting support for Minecraft Java servers, including guided setup, server types, mods, plugins, modpacks, playit.gg tunneling, backups, performance tools, and player management.</p>
+        <ul class="game-card__features">
+          <li data-i18n="games.minecraft.f1">Guided server setup</li>
+          <li data-i18n="games.minecraft.f2">11 server types</li>
+          <li data-i18n="games.minecraft.f3">Mods, plugins, and modpacks</li>
+          <li data-i18n="games.minecraft.f4">Built-in tunnel support</li>
+          <li data-i18n="games.minecraft.f5">Backups and restore</li>
+          <li data-i18n="games.minecraft.f6">Player management</li>
+          <li data-i18n="games.minecraft.f7">Performance tools</li>
+        </ul>
+      </div>
+      <div class="game-card game-card--upcoming">
+        <div class="game-card__index">02</div>
+        <div class="game-card__header">
+          <h3 class="game-card__title" data-i18n="games.terraria.title">Terraria</h3>
+          <span class="game-card__status game-card__status--coming" data-i18n="games.terraria.status">Coming soon</span>
+        </div>
+        <p class="game-card__desc" data-i18n="games.terraria.desc">Terraria server hosting is planned as Lbby expands into multi-game hosting.</p>
+        <ul class="game-card__features">
+          <li data-i18n="games.terraria.f1">Planned server setup flow</li>
+          <li data-i18n="games.terraria.f2">Planned hosting controls</li>
+          <li data-i18n="games.terraria.f3">Planned friend/community hosting</li>
+          <li data-i18n="games.terraria.f4">Roadmap item</li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <!-- Dashboard Showcase -->
-  <section class="section section-dark" id="showcase">
-    <div class="container">
-      <div class="showcase-split anim-stagger">
-        <div class="anim-fade-up">
-          <div class="showcase-heading">
-            <div class="showcase-icon">&#128295;</div>
-            <h2 data-i18n="showcase.title">Dashboard</h2>
-          </div>
-          <p class="showcase-lead" data-i18n="showcase.lead">
-            An intuitive control panel with mod/plugin management, automatic backup/restore, and everything you need.
-          </p>
-          <ul class="showcase-bullets">
-            <li data-i18n="showcase.bullet1">Clean, user-friendly interface.</li>
-            <li data-i18n="showcase.bullet2">Install mods, plugins, and modpacks.</li>
-            <li data-i18n="showcase.bullet3">Upgrade resources and manage servers easily.</li>
-            <li data-i18n-html="showcase.bullet4">Everything you need to create a Minecraft server <span class="showcase-highlight">is built in</span>.</li>
+  <!-- ══════════════════════════════════════════════════════════════
+       DASHBOARD
+       ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="showcase">
+    <div class="section__header reveal">
+      <p class="section-label" data-i18n="showcase.label">Dashboard</p>
+      <h2 class="section-title" data-i18n="showcase.title">One dashboard for your game servers</h2>
+      <p class="body-text" data-i18n="showcase.desc">An intuitive control panel for installing, starting, managing, and sharing game servers. Minecraft Java support is available now, with Terraria support on the way.</p>
+    </div>
+    <div class="showcase__image reveal">
+      <img src="/assets/dashboard.png" alt="Lbby dashboard showing game server management" loading="lazy">
+    </div>
+    <div class="showcase__bullets reveal">
+      <div class="showcase__bullet" data-i18n="showcase.b1">Clean, user-friendly interface</div>
+      <div class="showcase__bullet" data-i18n="showcase.b2">Install and manage supported game servers</div>
+      <div class="showcase__bullet" data-i18n="showcase.b3">Manage mods, plugins, and modpacks where supported</div>
+      <div class="showcase__bullet" data-i18n="showcase.b4">Create backups and restore server data</div>
+      <div class="showcase__bullet" data-i18n="showcase.b5">Monitor server status and performance</div>
+      <div class="showcase__bullet" data-i18n="showcase.b6">Share servers without router configuration</div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       FEATURES
+       ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="features">
+    <div class="section__header reveal">
+      <p class="section-label" data-i18n="features.label">Features</p>
+      <h2 class="section-title" data-i18n="features.title">Everything you need to host</h2>
+      <p class="body-text" data-i18n="features.subtitle">From zero to a running game server in minutes. No terminal, no config files, no headaches.</p>
+    </div>
+    <div class="features__list reveal">
+      <div class="feature-row">
+        <span class="feature-row__index">01</span>
+        <div class="feature-row__body">
+          <h3 class="feature-row__title" data-i18n="features.f1.title">Game Server Setup</h3>
+          <p class="feature-row__desc" data-i18n="features.f1.desc">Create supported game servers through a guided setup flow. Minecraft Java is fully supported today, with Terraria support on the roadmap.</p>
+        </div>
+      </div>
+      <div class="feature-row">
+        <span class="feature-row__index">02</span>
+        <div class="feature-row__body">
+          <h3 class="feature-row__title" data-i18n="features.f2.title">Minecraft Java Support</h3>
+          <p class="feature-row__desc" data-i18n="features.f2.desc">Vanilla, Paper, Folia, Purpur, Bukkit, Spigot, Forge, Fabric, NeoForge, SpongeVanilla, and SpongeForge — all from a guided setup wizard.</p>
+        </div>
+      </div>
+      <div class="feature-row">
+        <span class="feature-row__index">03</span>
+        <div class="feature-row__body">
+          <h3 class="feature-row__title" data-i18n="features.f3.title">Play Anywhere</h3>
+          <p class="feature-row__desc" data-i18n="features.f3.desc">Built-in tunnel support so friends can join from anywhere. No port forwarding or static IP needed.</p>
+        </div>
+      </div>
+      <div class="feature-row">
+        <span class="feature-row__index">04</span>
+        <div class="feature-row__body">
+          <h3 class="feature-row__title" data-i18n="features.f4.title">Remote Control</h3>
+          <p class="feature-row__desc" data-i18n="features.f4.desc">Manage your server from your phone or another PC where supported. LAN + Cloudflare Quick Tunnel with secure token authentication.</p>
+        </div>
+      </div>
+      <div class="feature-row">
+        <span class="feature-row__index">05</span>
+        <div class="feature-row__body">
+          <h3 class="feature-row__title" data-i18n="features.f5.title">Mods &amp; Plugins</h3>
+          <p class="feature-row__desc" data-i18n="features.f5.desc">For Minecraft Java, browse Modrinth, install mods and plugins, use modpacks from Modrinth and CurseForge, and check updates automatically.</p>
+        </div>
+      </div>
+      <div class="feature-row">
+        <span class="feature-row__index">06</span>
+        <div class="feature-row__body">
+          <h3 class="feature-row__title" data-i18n="features.f6.title">Backups</h3>
+          <p class="feature-row__desc" data-i18n="features.f6.desc">Create ZIP backups, restore from backups, and schedule automatic backups. Never lose your world again.</p>
+        </div>
+      </div>
+      <div class="feature-row">
+        <span class="feature-row__index">07</span>
+        <div class="feature-row__body">
+          <h3 class="feature-row__title" data-i18n="features.f7.title">Performance</h3>
+          <p class="feature-row__desc" data-i18n="features.f7.desc">JVM optimization presets, TPS monitoring, chunk pre-generation, and customizable dashboard with live ring meters for Minecraft Java servers.</p>
+        </div>
+      </div>
+      <div class="feature-row">
+        <span class="feature-row__index">08</span>
+        <div class="feature-row__body">
+          <h3 class="feature-row__title" data-i18n="features.f8.title">Player Admin</h3>
+          <p class="feature-row__desc" data-i18n="features.f8.desc">For Minecraft Java, manage online players with avatars, OP, kick, ban, unban, teleport, and more.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       SCREENSHOTS
+       ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="screenshots">
+    <div class="section__header reveal">
+      <p class="section-label" data-i18n="screenshots.label">See it in action</p>
+      <h2 class="section-title" data-i18n="screenshots.title">A closer look at Lbby's Minecraft Java hosting experience.</h2>
+    </div>
+    <div class="screenshots__grid reveal">
+      <div class="screenshot-card">
+        <span class="screenshot-card__index">01</span>
+        <img src="/assets/manager-player.png" alt="Player management in Lbby" loading="lazy">
+        <h3 class="screenshot-card__title" data-i18n="screenshots.s1.title">Player Management</h3>
+        <p class="screenshot-card__desc" data-i18n="screenshots.s1.desc">Manage multiple players easily on your Minecraft Java server.</p>
+      </div>
+      <div class="screenshot-card">
+        <span class="screenshot-card__index">02</span>
+        <img src="/assets/connect-world.png" alt="Playit.gg integration in Lbby" loading="lazy">
+        <h3 class="screenshot-card__title" data-i18n="screenshots.s2.title">Playit.gg Integration</h3>
+        <p class="screenshot-card__desc" data-i18n="screenshots.s2.desc">Create a public server address without port forwarding.</p>
+      </div>
+      <div class="screenshot-card">
+        <span class="screenshot-card__index">03</span>
+        <img src="/assets/automodpack.png" alt="Mod and modpack support in Lbby" loading="lazy">
+        <h3 class="screenshot-card__title" data-i18n="screenshots.s3.title">Full Mod &amp; Modpack Support</h3>
+        <p class="screenshot-card__desc" data-i18n="screenshots.s3.desc">Install mods, plugins, and modpacks quickly for Minecraft Java servers.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       DOWNLOAD
+       ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="download">
+    <div class="section__header reveal">
+      <p class="section-label" data-i18n="download.label">Download</p>
+      <h2 class="section-title" data-i18n="download.title">Get Lbby</h2>
+      <p class="body-text" data-i18n="download.desc">Free to use. Available for Windows, macOS, and Linux. Minecraft Java hosting is available now. Terraria support is coming soon.</p>
+    </div>
+    <div class="download__cards reveal" id="download-cards">
+      <div class="download-card" data-platform="windows">
+        <span class="download-card__platform">Windows</span>
+        <span class="download-card__ext">.exe</span>
+        <span class="download-card__size">—</span>
+        <a class="btn btn--primary download-card__btn" href="#" data-i18n="download.btn">Download</a>
+      </div>
+      <div class="download-card" data-platform="macos">
+        <span class="download-card__platform">macOS</span>
+        <span class="download-card__ext">.dmg</span>
+        <span class="download-card__size">—</span>
+        <a class="btn btn--primary download-card__btn" href="#" data-i18n="download.btn">Download</a>
+      </div>
+      <div class="download-card" data-platform="linux">
+        <span class="download-card__platform">Linux</span>
+        <span class="download-card__ext">.deb / .AppImage / .rpm</span>
+        <span class="download-card__size">—</span>
+        <a class="btn btn--primary download-card__btn" href="#" data-i18n="download.btn">Download</a>
+      </div>
+    </div>
+    <div class="download__footer reveal">
+      <a href="https://github.com/aindrewkwk/lbby-releases/releases" class="download__gh-link" data-i18n="download.gh">View All Releases on GitHub</a>
+      <p class="download__beta" data-i18n="download.beta">Beta: The app is unsigned. On macOS: right-click → Open → Open. On Windows: More info → Run anyway.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       DOCS
+       ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="docs">
+    <div class="section__header reveal">
+      <p class="section-label" data-i18n="docs.label">Documentation</p>
+      <h2 class="section-title" data-i18n="docs.title">Getting Started</h2>
+      <p class="body-text" data-i18n="docs.subtitle">From download to your first game server in minutes.</p>
+    </div>
+    <div class="docs__content reveal">
+      <nav class="docs__sidebar" aria-label="Documentation navigation">
+        <a href="#docs-quickstart" class="docs__nav-link active" data-i18n="docs.nav.quickstart">Quick Start</a>
+        <a href="#docs-games" class="docs__nav-link" data-i18n="docs.nav.games">Supported Games</a>
+        <a href="#docs-minecraft" class="docs__nav-link" data-i18n="docs.nav.minecraft">Minecraft Java</a>
+        <a href="#docs-types" class="docs__nav-link" data-i18n="docs.nav.types">Server Types</a>
+        <a href="#docs-players" class="docs__nav-link" data-i18n="docs.nav.players">Player Management</a>
+        <a href="#docs-mods" class="docs__nav-link" data-i18n="docs.nav.mods">Mods &amp; Plugins</a>
+        <a href="#docs-backups" class="docs__nav-link" data-i18n="docs.nav.backups">Backups</a>
+        <a href="#docs-performance" class="docs__nav-link" data-i18n="docs.nav.performance">Performance</a>
+        <a href="#docs-playit" class="docs__nav-link" data-i18n="docs.nav.playit">playit.gg</a>
+        <a href="#docs-terraria" class="docs__nav-link" data-i18n="docs.nav.terraria">Terraria Roadmap</a>
+      </nav>
+      <div class="docs__body">
+        <div class="docs__section" id="docs-quickstart">
+          <h3 class="docs__section-title" data-i18n="docs.quickstart.title">Quick Start</h3>
+          <ol class="docs__steps">
+            <li data-i18n="docs.quickstart.s1">Download and install Lbby for your platform</li>
+            <li data-i18n="docs.quickstart.s2">Open Lbby — the setup wizard will guide you</li>
+            <li data-i18n="docs.quickstart.s3">Choose a supported game</li>
+            <li data-i18n="docs.quickstart.s4">For now, select Minecraft Java</li>
+            <li data-i18n="docs.quickstart.s5">Pick a Minecraft server type: Paper recommended, Fabric, Forge, etc.</li>
+            <li data-i18n="docs.quickstart.s6">Choose a Minecraft version and loader/build version if needed</li>
+            <li data-i18n="docs.quickstart.s7">Set your server name, folder, RAM, and max players</li>
+            <li data-i18n="docs.quickstart.s8">Click Install Server</li>
+            <li data-i18n="docs.quickstart.s9">Open the Dashboard and click Start</li>
+            <li data-i18n="docs.quickstart.s10">Open the Tunnel tab and start playit.gg</li>
+            <li data-i18n="docs.quickstart.s11">Share the public tunnel address with friends</li>
+          </ol>
+          <p class="docs__summary"><code>choose game → install → start → tunnel → share</code></p>
+        </div>
+        <div class="docs__section" id="docs-games">
+          <h3 class="docs__section-title" data-i18n="docs.games.title">Supported Games</h3>
+          <ul class="docs__list">
+            <li><strong>Minecraft Java</strong> — <span data-i18n="docs.games.mc">Available now</span></li>
+            <li><strong>Terraria</strong> — <span data-i18n="docs.games.terraria">Coming soon</span></li>
           </ul>
         </div>
-        <div class="showcase-image anim-fade-up">
-          <img src="assets/dashboard.png" alt="Lbby Dashboard">
+        <div class="docs__section" id="docs-minecraft">
+          <h3 class="docs__section-title" data-i18n="docs.minecraft.title">Minecraft Java</h3>
+          <p class="body-text" data-i18n="docs.minecraft.desc">Minecraft Java is Lbby's first fully supported game. It includes guided setup, server types, mods, plugins, modpacks, player management, backups, tunnels, and performance tools.</p>
+        </div>
+        <div class="docs__section" id="docs-types">
+          <h3 class="docs__section-title" data-i18n="docs.types.title">Server Types</h3>
+          <p class="body-text" data-i18n="docs.types.intro">Lbby supports 11 Minecraft Java server types:</p>
+          <ul class="docs__list">
+            <li><strong>Vanilla</strong> — Pure Minecraft, no mods or plugins.</li>
+            <li><strong>Paper</strong> — Optimized server with plugin support. Best for most servers.</li>
+            <li><strong>Fabric</strong> — Lightweight modern mod loader. Great for performance mods.</li>
+            <li><strong>Forge</strong> — Classic mod loader with the largest mod ecosystem.</li>
+            <li><strong>Purpur</strong> — Feature-rich Paper fork with extra customization.</li>
+            <li><strong>Folia</strong> — Multithreaded Paper fork for massive servers.</li>
+            <li><strong>NeoForge</strong> — Modern fork of Forge.</li>
+            <li><strong>Bukkit / Spigot</strong> — Original plugin API servers.</li>
+            <li><strong>SpongeVanilla / SpongeForge</strong> — Sponge API servers.</li>
+          </ul>
+        </div>
+        <div class="docs__section" id="docs-players">
+          <h3 class="docs__section-title" data-i18n="docs.players.title">Player Management</h3>
+          <p class="body-text" data-i18n="docs.players.desc">For Minecraft Java servers, click any online player to open the detail modal:</p>
+          <ul class="docs__list">
+            <li data-i18n="docs.players.l1"><strong>Stats</strong> — Health, food, XP bar, gamemode, position, active effects</li>
+            <li data-i18n="docs.players.l2"><strong>Inventory</strong> — View items, give items, remove items, ender chest</li>
+            <li data-i18n="docs.players.l3"><strong>Actions</strong> — Kill, heal, feed, freeze, spectate, gamemode, clear effects, set XP</li>
+            <li data-i18n="docs.players.l4">OP/de-OP, kick, ban/unban, and teleport from the player list</li>
+          </ul>
+        </div>
+        <div class="docs__section" id="docs-mods">
+          <h3 class="docs__section-title" data-i18n="docs.mods.title">Mods &amp; Plugins</h3>
+          <p class="body-text" data-i18n="docs.mods.intro">For Minecraft Java:</p>
+          <ul class="docs__list">
+            <li data-i18n="docs.mods.l1"><strong>Modpacks</strong> — Install Modrinth .mrpack, paste a link, or upload CurseForge .zip</li>
+            <li data-i18n="docs.mods.l2"><strong>Browse Mods</strong> — Search Modrinth and install directly</li>
+            <li data-i18n="docs.mods.l3"><strong>Updates</strong> — Check for mod updates, update safely</li>
+            <li data-i18n="docs.mods.l4"><strong>Resource Packs</strong> — Add, list, remove server resource packs</li>
+          </ul>
+        </div>
+        <div class="docs__section" id="docs-backups">
+          <h3 class="docs__section-title" data-i18n="docs.backups.title">Backups</h3>
+          <ul class="docs__list">
+            <li data-i18n="docs.backups.l1">Create manual ZIP backups of your server</li>
+            <li data-i18n="docs.backups.l2">Restore from any previous backup</li>
+            <li data-i18n="docs.backups.l3">Schedule automatic backups</li>
+          </ul>
+        </div>
+        <div class="docs__section" id="docs-performance">
+          <h3 class="docs__section-title" data-i18n="docs.performance.title">Performance Tips</h3>
+          <p class="body-text" data-i18n="docs.performance.intro">For Minecraft Java:</p>
+          <ul class="docs__list">
+            <li data-i18n="docs.performance.l1">Use Settings → Performance → Low CPU if CPU spikes</li>
+            <li data-i18n="docs.performance.l2">Keep Optimized JVM flags enabled</li>
+            <li data-i18n="docs.performance.l3">Lower View Distance to 6–8</li>
+            <li data-i18n="docs.performance.l4">Use Pre-generate Chunks before players explore far</li>
+          </ul>
+        </div>
+        <div class="docs__section" id="docs-playit">
+          <h3 class="docs__section-title" data-i18n="docs.playit.title">playit.gg Troubleshooting</h3>
+          <ul class="docs__list">
+            <li data-i18n="docs.playit.l1">Dashboard shows the server is Online</li>
+            <li data-i18n="docs.playit.l2">Tunnel tab shows playit.gg is running</li>
+            <li data-i18n="docs.playit.l3">Local port matches the server port, usually 25565 for Minecraft Java</li>
+            <li data-i18n="docs.playit.l4">Use the exact address shown by Lbby, including port if shown</li>
+          </ul>
+        </div>
+        <div class="docs__section" id="docs-terraria">
+          <h3 class="docs__section-title" data-i18n="docs.terraria.title">Terraria Roadmap</h3>
+          <p class="body-text" data-i18n="docs.terraria.desc">Terraria support is planned as part of Lbby's move toward multi-game hosting. Present it as coming soon, not currently available.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Features -->
-  <section class="section section-darker" id="features">
-    <div class="container">
-      <div class="section-header anim-fade-up">
-        <div class="label" data-i18n="features.label">Features</div>
-        <h2 data-i18n="features.title">Everything you need</h2>
-        <p data-i18n="features.subtitle">From zero to a running server in under a minute. No terminal, no config files, no headaches.</p>
-      </div>
-      <div class="features-grid anim-stagger">
-        <div class="feature-card anim-fade-up">
-          <div class="feature-icon">&#127922;</div>
-          <h3 data-i18n="feature.server.title">11 Server Types</h3>
-          <p data-i18n="feature.server.body">Vanilla, Paper, Folia, Purpur, Bukkit, Spigot, Forge, Fabric, NeoForge, SpongeVanilla, and SpongeForge — all from a guided setup wizard.</p>
-        </div>
-        <div class="feature-card anim-fade-up">
-          <div class="feature-icon">&#127760;</div>
-          <h3 data-i18n="feature.play.title">Play Anywhere</h3>
-          <p data-i18n="feature.play.body">Built-in playit.gg tunnel so friends can join from anywhere. No port forwarding or static IP needed.</p>
-        </div>
-        <div class="feature-card anim-fade-up">
-          <div class="feature-icon">&#128190;</div>
-          <h3 data-i18n="feature.backups.title">Backups</h3>
-          <p data-i18n="feature.backups.body">Create ZIP backups, restore from backups, and schedule automatic backups. Never lose your world again.</p>
-        </div>
-        <div class="feature-card anim-fade-up">
-          <div class="feature-icon">&#128101;</div>
-          <h3 data-i18n="feature.players.title">Player Management</h3>
-          <p data-i18n="feature.players.body">View player inventory, health, XP, effects. Kill, heal, freeze, gamemode, give items — full admin control.</p>
-        </div>
-        <div class="feature-card anim-fade-up">
-          <div class="feature-icon">&#128187;</div>
-          <h3 data-i18n="feature.console.title">Live Console</h3>
-          <p data-i18n="feature.console.body">Real-time server console with command input. Monitor players, TPS, RAM, CPU, and disk from the dashboard.</p>
-        </div>
-        <div class="feature-card anim-fade-up">
-          <div class="feature-icon">&#9889;</div>
-          <h3 data-i18n="feature.performance.title">Performance</h3>
-          <p data-i18n="feature.performance.body">JVM optimization presets, TPS monitoring, chunk pre-generation, and customizable dashboard with live ring meters.</p>
-        </div>
-        <div class="feature-card anim-fade-up">
-          <div class="feature-icon">&#128225;</div>
-          <h3 data-i18n="feature.remote.title">Remote Control</h3>
-          <p data-i18n="feature.remote.body">Manage your server from your phone or another PC. LAN + Cloudflare Quick Tunnel with secure token authentication.</p>
-        </div>
-        <div class="feature-card anim-fade-up">
-          <div class="feature-icon">&#128230;</div>
-          <h3 data-i18n="feature.mods.title">Mods & Plugins</h3>
-          <p data-i18n="feature.mods.body">Browse Modrinth, install mods & plugins, modpack support (Modrinth + CurseForge), and automatic update checker.</p>
-        </div>
-        <div class="feature-card anim-fade-up">
-          <div class="feature-icon">&#127912;</div>
-          <h3 data-i18n="feature.theme.title">Dark & Light Mode</h3>
-          <p data-i18n="feature.theme.body">Beautiful UI with dark and light themes. English and Vietnamese language support.</p>
-        </div>
-      </div>
+  <!-- ══════════════════════════════════════════════════════════════
+       CHANGELOG
+       ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="changelog">
+    <div class="section__header reveal">
+      <p class="section-label" data-i18n="changelog.label">Changelog</p>
+      <h2 class="section-title" data-i18n="changelog.title">What's new</h2>
+    </div>
+    <div class="changelog__list reveal" id="changelog-list">
+      <!-- Dynamically populated by releases.js -->
+    </div>
+    <div class="changelog__footer reveal">
+      <a href="https://github.com/aindrewkwk/lbby-releases/releases" data-i18n="changelog.all">View All Releases</a>
     </div>
   </section>
 
-  <!-- Screenshots -->
-  <section class="section section-darker" id="screenshots">
-    <div class="container">
-      <div class="section-header anim-fade-up">
-        <div class="label" data-i18n="screenshots.label">Screenshots</div>
-        <h2 data-i18n="screenshots.title">See it in action</h2>
-      </div>
-      <div class="screenshot-list">
-        <article class="shot-card anim-fade-up">
-          <img src="assets/manager-player.png" alt="Player Management">
-          <div class="shot-label">
-            <h3 data-i18n="screenshots.player.title">Player Management</h3>
-            <p data-i18n="screenshots.player.desc">Manage multiple players easily on your Minecraft server.</p>
-          </div>
-        </article>
-        <article class="shot-card anim-fade-up">
-          <img src="assets/connect-world.png" alt="Playit.gg Integration">
-          <div class="shot-label">
-            <h3 data-i18n="screenshots.playit.title">Playit.gg Integration</h3>
-            <p data-i18n="screenshots.playit.desc">Easily create a public server address — no port forwarding needed.</p>
-          </div>
-        </article>
-        <article class="shot-card anim-fade-up">
-          <img src="assets/automodpack.png" alt="Modpack Support">
-          <div class="shot-label">
-            <h3 data-i18n="screenshots.mods.title">Full Mod & Modpack Support</h3>
-            <p data-i18n="screenshots.mods.desc">Automatic installation — fast and easy to use.</p>
-          </div>
-        </article>
-      </div>
+  <!-- ══════════════════════════════════════════════════════════════
+       LICENSE
+       ══════════════════════════════════════════════════════════════ -->
+  <section class="section" id="license">
+    <div class="section__header reveal">
+      <p class="section-label" data-i18n="license.label">License</p>
+      <h2 class="section-title" data-i18n="license.title">Free to use</h2>
+      <p class="body-text" data-i18n="license.desc">Lbby is free software. See the license for details.</p>
     </div>
   </section>
 
-  <!-- Download -->
-  <section class="section section-darker" id="download">
-    <div class="download-panel">
-      <h2 data-i18n="download.title">Get Lbby</h2>
-      <p class="subtitle" data-i18n="download.subtitle">Free to use. Available for Windows, macOS, and Linux.</p>
-      <div class="download-cards anim-stagger" id="download-cards">
-        <div class="download-card anim-fade-up"><p class="text-muted" data-i18n="download.loading">Loading releases...</p></div>
-      </div>
-      <div style="text-align: center; margin-top: 28px;">
-        <a href="https://github.com/aindrewkwk/lbby-releases/releases" target="_blank" class="btn btn-secondary btn-sm" data-i18n="download.all">View All Releases on GitHub</a>
-      </div>
-      <div class="beta-warning" data-i18n-html="download.beta">
-        <strong style="color: var(--yellow);">&#9888; Beta:</strong> The app is unsigned. On macOS: right-click &rarr; Open &rarr; Open. On Windows: More info &rarr; Run anyway.
-      </div>
-    </div>
-  </section>
-
-  <!-- Docs -->
-  <section class="section section-dark" id="docs" style="padding-top: 40px;">
-    <div class="section-header anim-fade-up">
-      <div class="label" data-i18n="docs.label">Documentation</div>
-      <h2 data-i18n="docs.title">Getting Started</h2>
-      <p data-i18n="docs.subtitle">From download to your first server in minutes.</p>
-    </div>
-    <div class="docs-layout">
-      <nav class="docs-sidebar">
-        <a href="#docs-quickstart" class="active" data-i18n="docs.nav.quick">Quick Start</a>
-        <a href="#docs-server-types" data-i18n="docs.nav.types">Server Types</a>
-        <a href="#docs-players" data-i18n="docs.nav.players">Player Management</a>
-        <a href="#docs-mods" data-i18n="docs.nav.mods">Mods & Plugins</a>
-        <a href="#docs-backups" data-i18n="docs.nav.backups">Backups</a>
-        <a href="#docs-performance" data-i18n="docs.nav.performance">Performance</a>
-        <a href="#docs-playit" data-i18n="docs.nav.playit">playit.gg</a>
-      </nav>
-      <div class="docs-content">
-        <h3 id="docs-quickstart" data-i18n="docs.quick.title">Quick Start</h3>
-        <ol>
-          <li data-i18n="docs.quick.1">Download and install Lbby for your platform</li>
-          <li data-i18n="docs.quick.2">Open Lbby — the setup wizard will guide you</li>
-          <li data-i18n-html="docs.quick.3">Pick a server type: <strong>Paper</strong> (recommended), <strong>Fabric</strong>, <strong>Forge</strong>, etc.</li>
-          <li data-i18n="docs.quick.4">Choose a Minecraft version and loader/build version if needed</li>
-          <li data-i18n="docs.quick.5">Set your server name, folder, RAM, and max players</li>
-          <li data-i18n-html="docs.quick.6">Click <strong>Install Server</strong></li>
-          <li data-i18n-html="docs.quick.7">Open the Dashboard and click <strong>Start</strong></li>
-          <li data-i18n-html="docs.quick.8">Open the <strong>Tunnel</strong> tab and start playit.gg</li>
-          <li data-i18n="docs.quick.9">Share the public tunnel address with friends</li>
-        </ol>
-        <p data-i18n-html="docs.quick.done"><strong>That's it:</strong> install &rarr; start &rarr; tunnel &rarr; share.</p>
-
-        <h3 id="docs-server-types" data-i18n="docs.types.title">Server Types</h3>
-        <p data-i18n="docs.types.intro">Lbby supports 11 server types:</p>
-        <ul>
-          <li data-i18n-html="docs.types.paper"><strong>Paper</strong> — Optimized server with plugin support. Best for most servers.</li>
-          <li data-i18n-html="docs.types.fabric"><strong>Fabric</strong> — Lightweight modern mod loader. Great for performance mods.</li>
-          <li data-i18n-html="docs.types.forge"><strong>Forge</strong> — Classic mod loader with the largest mod ecosystem.</li>
-          <li data-i18n-html="docs.types.purpur"><strong>Purpur</strong> — Feature-rich Paper fork with extra customization.</li>
-          <li data-i18n-html="docs.types.folia"><strong>Folia</strong> — Multithreaded Paper fork for massive servers.</li>
-          <li data-i18n-html="docs.types.neoforge"><strong>NeoForge</strong> — Modern fork of Forge.</li>
-          <li data-i18n-html="docs.types.bukkit"><strong>Bukkit / Spigot</strong> — Original plugin API servers.</li>
-          <li data-i18n-html="docs.types.sponge"><strong>SpongeVanilla / SpongeForge</strong> — Sponge API servers.</li>
-          <li data-i18n-html="docs.types.vanilla"><strong>Vanilla</strong> — Pure Minecraft, no mods or plugins.</li>
-        </ul>
-
-        <h3 id="docs-players" data-i18n="docs.players.title">Player Management</h3>
-        <p data-i18n="docs.players.intro">Click any online player to open the detail modal:</p>
-        <ul>
-          <li data-i18n-html="docs.players.stats"><strong>Stats</strong> — Health, food, XP bars, gamemode, position, active effects</li>
-          <li data-i18n-html="docs.players.inventory"><strong>Inventory</strong> — View items, give items, remove items, ender chest</li>
-          <li data-i18n-html="docs.players.actions"><strong>Actions</strong> — Kill, heal, feed, freeze, spectate, gamemode, clear effects, set XP</li>
-          <li data-i18n="docs.players.ops">OP/de-OP, kick, ban/unban, and teleport from the player list</li>
-        </ul>
-
-        <h3 id="docs-mods" data-i18n="docs.mods.title">Mods & Plugins</h3>
-        <ul>
-          <li data-i18n-html="docs.mods.modpacks"><strong>Modpacks</strong> — Install Modrinth <code>.mrpack</code>, paste a link, or upload CurseForge <code>.zip</code></li>
-          <li data-i18n-html="docs.mods.browse"><strong>Browse Mods</strong> — Search Modrinth and install directly</li>
-          <li data-i18n-html="docs.mods.updates"><strong>Updates</strong> — Check for mod updates, update safely</li>
-          <li data-i18n-html="docs.mods.resources"><strong>Resource Packs</strong> — Add, list, remove server resource packs</li>
-        </ul>
-
-        <h3 id="docs-backups" data-i18n="docs.backups.title">Backups</h3>
-        <ul>
-          <li data-i18n="docs.backups.1">Create manual ZIP backups of your server</li>
-          <li data-i18n="docs.backups.2">Restore from any previous backup</li>
-          <li data-i18n="docs.backups.3">Schedule automatic backups</li>
-        </ul>
-
-        <h3 id="docs-performance" data-i18n="docs.performance.title">Performance Tips</h3>
-        <ul>
-          <li data-i18n-html="docs.performance.1">Use <strong>Settings &rarr; Performance &rarr; Low CPU</strong> if CPU spikes</li>
-          <li data-i18n-html="docs.performance.2">Keep <strong>Optimized JVM flags</strong> enabled</li>
-          <li data-i18n-html="docs.performance.3">Lower <strong>View Distance</strong> to 6&ndash;8</li>
-          <li data-i18n-html="docs.performance.4">Use <strong>Pre-generate Chunks</strong> before players explore far</li>
-        </ul>
-
-        <h3 id="docs-playit" data-i18n="docs.playit.title">playit.gg Troubleshooting</h3>
-        <ul>
-          <li data-i18n-html="docs.playit.1">Dashboard shows the server is <strong>Online</strong></li>
-          <li data-i18n="docs.playit.2">Tunnel tab shows playit.gg is running</li>
-          <li data-i18n-html="docs.playit.3">Local port matches <code>server-port</code> in <code>server.properties</code> (usually <code>25565</code>)</li>
-          <li data-i18n="docs.playit.4">Use the exact address shown by Lbby, including port if shown</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- Changelog -->
-  <section class="section section-dark" id="changelog">
-    <div class="section-header anim-fade-up">
-      <div class="label" data-i18n="changelog.label">Changelog</div>
-      <h2 data-i18n="changelog.title">What's new</h2>
-      <p data-i18n="changelog.subtitle">Recent releases and updates.</p>
-    </div>
-    <div id="changelog-list" style="max-width: 760px; margin: 0 auto;">
-      <p class="text-muted text-center" data-i18n="changelog.loading">Loading changelog...</p>
-    </div>
-    <div style="text-align: center; margin-top: 24px;">
-      <a href="https://github.com/aindrewkwk/lbby-releases/releases" target="_blank" class="btn btn-secondary btn-sm" data-i18n="changelog.all">View All Releases</a>
-    </div>
-  </section>
-
-  <!-- Footer -->
+  <!-- ══════════════════════════════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════════════════════════════ -->
   <footer class="footer">
-    <div class="footer-line"></div>
-    <p data-i18n="footer.copy">&copy; 2026 R Studio. All rights reserved.</p>
+    <div class="footer__inner">
+      <div class="footer__left">
+        <a href="/" class="footer__brand">Lbby</a>
+        <span class="footer__by">by <a href="https://rstudio.live">R Studio</a></span>
+      </div>
+      <div class="footer__links">
+        <a href="https://rstudio.live" data-i18n="footer.rstudio">R Studio</a>
+        <a href="https://github.com/aindrewkwk/lbby-releases" data-i18n="footer.github">GitHub</a>
+        <a href="https://discord.gg/cAyhN24pAN" data-i18n="footer.discord">Discord</a>
+      </div>
+      <p class="footer__copy">&copy; 2026 R Studio. All rights reserved.</p>
+    </div>
   </footer>
 
-  <!-- Back to Top -->
-  <a href="#hero" class="back-to-top" id="back-to-top">&#8593;</a>
-
-  <script src="js/main.js"></script>
-  <script src="js/releases.js"></script>
+  <!-- ══════════════════════════════════════════════════════════════
+       SCRIPTS
+       ══════════════════════════════════════════════════════════════ -->
+  <script src="/js/i18n-en.js"></script>
+  <script src="/js/i18n-vi.js"></script>
+  <script src="/js/ascii-bg.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/releases.js"></script>
 </body>
 </html>
