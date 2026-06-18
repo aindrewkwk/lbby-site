@@ -41,10 +41,7 @@
   }
 
   function updateThemeFavicon() {
-    const link = document.getElementById('favicon');
-    if (!link) return;
-    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
-    link.setAttribute('href', theme === 'dark' ? '/favicon-dark.svg' : '/favicon-light.svg');
+    // favicon stays as the app icon PNG — no theme switching needed
   }
 
   /* ================================================================
