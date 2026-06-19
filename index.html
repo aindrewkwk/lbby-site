@@ -456,13 +456,52 @@
   <section class="section" id="license">
     <div class="section__header reveal">
       <p class="section-label" data-i18n="license.label">License</p>
-      <h2 class="section-title" data-i18n="license.title">License</h2>
-      <p class="body-text" data-i18n="license.desc">Generate and manage license keys for Lbby. Password-protected — team access only.</p>
+      <h2 class="section-title" data-i18n="license.title">How Licensing Works</h2>
+      <p class="body-text" data-i18n="license.desc">Lbby uses Ed25519-signed JWT tokens for license activation. Keys are generated and verified entirely client-side — no backend required.</p>
     </div>
-    <div class="license__card reveal" style="max-width:560px;margin:0 auto;text-align:center;background:var(--bg-card,#1a1a2e);border:1px solid var(--border,#2a2a3e);border-radius:var(--radius,12px);padding:40px 32px;">
-      <a href="/license.html" class="btn btn--primary" style="display:inline-block;padding:12px 32px;font-size:15px;font-weight:600;" data-i18n="license.card.btn">Open License Generator →</a>
+    <div class="features__list reveal">
+      <div class="feature-row">
+        <span class="feature-row__index">01</span>
+        <div class="feature-row__body">
+          <h3 class="feature-row__title" data-i18n="license.f1.title">Ed25519 Signing</h3>
+          <p class="feature-row__desc" data-i18n="license.f1.desc">Licenses are signed with Ed25519 elliptic curve keys. The private key never leaves the generator; the public key is embedded in the app for verification.</p>
+        </div>
+      </div>
+      <div class="feature-row">
+        <span class="feature-row__index">02</span>
+        <div class="feature-row__body">
+          <h3 class="feature-row__title" data-i18n="license.f2.title">JWT Tokens</h3>
+          <p class="feature-row__desc" data-i18n="license.f2.desc">Each license is a standard JSON Web Token containing user ID, tier, expiry, and optional device binding. Tokens are compact and easy to share.</p>
+        </div>
+      </div>
+      <div class="feature-row">
+        <span class="feature-row__index">03</span>
+        <div class="feature-row__body">
+          <h3 class="feature-row__title" data-i18n="license.f3.title">Novice &amp; Master Tiers</h3>
+          <p class="feature-row__desc" data-i18n="license.f3.desc">Two license tiers control feature access. Novice covers basic hosting; Master unlocks advanced tools and unlimited servers.</p>
+        </div>
+      </div>
+      <div class="feature-row">
+        <span class="feature-row__index">04</span>
+        <div class="feature-row__body">
+          <h3 class="feature-row__title" data-i18n="license.f4.title">Device Binding</h3>
+          <p class="feature-row__desc" data-i18n="license.f4.desc">Licenses can optionally be bound to a device fingerprint, preventing the same key from being used on multiple machines.</p>
+        </div>
+      </div>
+      <div class="feature-row">
+        <span class="feature-row__index">05</span>
+        <div class="feature-row__body">
+          <h3 class="feature-row__title" data-i18n="license.f5.title">Expiry Control</h3>
+          <p class="feature-row__desc" data-i18n="license.f5.desc">Set license validity from 30 minutes to 10 years. Tokens include a built-in expiry timestamp — the app enforces it automatically.</p>
+        </div>
+      </div>
     </div>
   </section>
+
+  <!-- ── Team Gateway (hidden) ──────────────────────────────────── -->
+  <div style="text-align:center;padding:8px 0 0;opacity:0.12;transition:opacity 0.3s;" onmouseover="this.style.opacity='0.5'" onmouseout="this.style.opacity='0.12'">
+    <a href="/license.html" style="color:var(--text-muted,#666);text-decoration:none;font-size:12px;letter-spacing:1px;" title="Team access">🔒</a>
+  </div>
 
   <!-- ══════════════════════════════════════════════════════════════
        FOOTER
