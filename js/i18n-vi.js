@@ -241,9 +241,26 @@ var LBBY_I18N_VI = {
   license: {
     label: 'Giấy phép',
     title: 'Giấy phép',
-    desc: '',
-    card: {
-      btn: 'Mở trình tạo giấy phép →'
+    desc: 'Lbby sử dụng token JWT được ký Ed25519 để kích hoạt giấy phép. Khóa được tạo và xác minh hoàn toàn phía client — không cần backend.',
+    f1: {
+      title: 'Ký Ed25519',
+      desc: 'Giấy phép được ký bằng khóa đường cong elliptic Ed25519. Khóa riêng không bao giờ rời khỏi trình tạo; khóa công khai được nhúng trong ứng dụng để xác minh.'
+    },
+    f2: {
+      title: 'Token JWT',
+      desc: 'Mỗi giấy phép là một JSON Web Token chuẩn chứa ID người chơi, gói, thời hạn và tùy chọn gắn thiết bị. Token nhỏ gọn và dễ chia sẻ.'
+    },
+    f3: {
+      title: 'Gói Novice & Master',
+      desc: 'Hai gói giấy phép kiểm soát quyền truy cập tính năng. Novice bao gồm lưu trữ cơ bản; Master mở khóa công cụ nâng cao và máy chủ không giới hạn.'
+    },
+    f4: {
+      title: 'Gắn thiết bị',
+      desc: 'Giấy phép có thể được gắn với dấu vân tay thiết bị, ngăn cùng một khóa được sử dụng trên nhiều máy.'
+    },
+    f5: {
+      title: 'Kiểm soát thời hạn',
+      desc: 'Đặt thời hạn giấy phép từ 30 phút đến 10 năm. Token bao gồm thời gian hết hạn tích hợp — ứng dụng thực thi tự động.'
     }
   },
 
