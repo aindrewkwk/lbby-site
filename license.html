@@ -44,6 +44,7 @@
       <a href="index.html#docs">Docs</a>
       <a href="index.html#changelog">Changelog</a>
       <a href="license.html" class="active">License</a>
+      <a href="#" onclick="logout()" style="margin-left:auto;opacity:0.5;font-size:13px;">Logout</a>
     </div>
   </nav>
 
@@ -599,6 +600,12 @@
 
     function newJwtId() {
       document.getElementById('jwtId').value = generateId();
+    }
+
+    function logout() {
+      sessionStorage.removeItem('lbby-auth');
+      sessionStorage.removeItem('lbby-attempts');
+      location.reload();
     }
   </script>
 </body>
