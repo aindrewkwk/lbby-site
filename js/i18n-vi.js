@@ -241,7 +241,12 @@ var LBBY_I18N_VI = {
   license: {
     label: 'Giấy phép',
     title: 'Giấy phép',
-    desc: 'Xem giấy phép để biết điều khoản và điều kiện.'
+    desc: 'Tạo và quản lý khóa giấy phép cho Lbby. Được bảo vệ bằng mật khẩu — chỉ dành cho nhóm.',
+    card: {
+      title: 'Trình tạo giấy phép',
+      desc: 'Tạo cặp khóa Ed25519, tạo khóa giấy phép JWT cho gói Novice và Master, gắn thiết bị và quản lý thời hạn — tất cả phía client, không cần backend.',
+      btn: 'Mở trình tạo giấy phép →'
+    }
   },
 
   footer: {
