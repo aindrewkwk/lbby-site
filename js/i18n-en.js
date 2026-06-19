@@ -241,9 +241,26 @@ var LBBY_I18N_EN = {
   license: {
     label: 'License',
     title: 'License',
-    desc: '',
-    card: {
-      btn: 'Open License Generator →'
+    desc: 'Lbby uses Ed25519-signed JWT tokens for license activation. Keys are generated and verified entirely client-side — no backend required.',
+    f1: {
+      title: 'Ed25519 Signing',
+      desc: 'Licenses are signed with Ed25519 elliptic curve keys. The private key never leaves the generator; the public key is embedded in the app for verification.'
+    },
+    f2: {
+      title: 'JWT Tokens',
+      desc: 'Each license is a standard JSON Web Token containing user ID, tier, expiry, and optional device binding. Tokens are compact and easy to share.'
+    },
+    f3: {
+      title: 'Novice & Master Tiers',
+      desc: 'Two license tiers control feature access. Novice covers basic hosting; Master unlocks advanced tools and unlimited servers.'
+    },
+    f4: {
+      title: 'Device Binding',
+      desc: 'Licenses can optionally be bound to a device fingerprint, preventing the same key from being used on multiple machines.'
+    },
+    f5: {
+      title: 'Expiry Control',
+      desc: 'Set license validity from 30 minutes to 10 years. Tokens include a built-in expiry timestamp — the app enforces it automatically.'
     }
   },
 
