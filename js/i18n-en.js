@@ -241,10 +241,8 @@ var LBBY_I18N_EN = {
   license: {
     label: 'License',
     title: 'License',
-    desc: 'Generate and manage license keys for Lbby. Password-protected — team access only.',
+    desc: '',
     card: {
-      title: 'License Generator',
-      desc: 'Generate Ed25519 key pairs, create JWT license keys for Novice and Master tiers, bind to devices, and manage expiry — all client-side, no backend required.',
       btn: 'Open License Generator →'
     }
   },
