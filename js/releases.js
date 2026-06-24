@@ -129,12 +129,7 @@
         var sizeEl = card.querySelector('.download-card__size');
         var btnEl = card.querySelector('.download-card__btn');
         if (sizeEl) sizeEl.textContent = formatSize(asset.size);
-        if (btnEl) {
-          btnEl.removeAttribute('data-i18n');
-          btnEl.href = asset.browser_download_url;
-          var ext = asset.name.split('.').pop().toUpperCase();
-          btnEl.textContent = 'Download .' + ext + ' · ' + formatSize(asset.size);
-        }
+        if (btnEl) btnEl.href = asset.browser_download_url;
       }
 
       if (p === platform) {
@@ -182,8 +177,6 @@
   document.addEventListener('DOMContentLoaded', function() {
     fetchLatest(function(release) {
       renderDownloads(release);
-      // Re-apply after i18n system finishes (it may overwrite button text)
-      setTimeout(function() { renderDownloads(release); }, 200);
     });
 
     fetchChangelog(function(releases) {
