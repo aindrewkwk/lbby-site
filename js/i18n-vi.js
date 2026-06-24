@@ -129,8 +129,8 @@ var LBBY_I18N_VI = {
   download: {
     label: 'Tải về',
     title: 'Tải Lbby',
-    desc: 'Lbby miễn phí sử dụng và hiện có sẵn cho Windows. Bản cho macOS và Linux đang được lên kế hoạch.',
-    btn: 'Tải cho Windows',
+    desc: 'Lbby miễn phí sử dụng. Có sẵn cho Windows, macOS và Linux.',
+    btn: 'Tải về',
     gh: 'Xem trên GitHub',
     beta: 'Phiên bản hiện tại: v1.0.0-beta'
   },

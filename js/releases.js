@@ -129,7 +129,11 @@
         var sizeEl = card.querySelector('.download-card__size');
         var btnEl = card.querySelector('.download-card__btn');
         if (sizeEl) sizeEl.textContent = formatSize(asset.size);
-        if (btnEl) btnEl.href = asset.browser_download_url;
+        if (btnEl) {
+          btnEl.href = asset.browser_download_url;
+          var ext = asset.name.split('.').pop().toUpperCase();
+          btnEl.textContent = 'Download .' + ext + ' · ' + formatSize(asset.size);
+        }
       }
 
       if (p === platform) {

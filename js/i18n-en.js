@@ -129,8 +129,8 @@ var LBBY_I18N_EN = {
   download: {
     label: 'Download',
     title: 'Get Lbby',
-    desc: 'Lbby is free to use and available for Windows. macOS and Linux builds are planned.',
-    btn: 'Download for Windows',
+    desc: 'Lbby is free to use. Available for Windows, macOS, and Linux.',
+    btn: 'Download',
     gh: 'View on GitHub',
     beta: 'Current release: v1.0.0-beta'
   },
