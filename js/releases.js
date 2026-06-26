@@ -86,11 +86,33 @@
               localStorage.setItem(CACHE_KEY, JSON.stringify({ data: data, ts: Date.now() }));
             } catch(e) {}
             callback(data);
+          } else {
+            console.warn('[lbby] No releases found');
+            callback(null);
           }
-        } catch(e) { callback(null); }
-      } else { callback(null); }
+        } catch(e) {
+          console.warn('[lbby] Failed to parse releases:', e);
+          callback(null);
+        }
+      } else {
+        console.warn('[lbby] GitHub API returned', xhr.status);
+        // On rate limit (403), try stale cache
+        if (xhr.status === 403) {
+          try {
+            var stale = JSON.parse(localStorage.getItem(CACHE_KEY));
+            if (stale && stale.data) {
+              latestCache = stale.data;
+              return callback(stale.data);
+            }
+          } catch(e) {}
+        }
+        callback(null);
+      }
     };
-    xhr.onerror = function() { callback(null); };
+    xhr.onerror = function() {
+      console.warn('[lbby] GitHub API network error');
+      callback(null);
+    };
     xhr.send();
   }
 
@@ -114,22 +136,32 @@
     xhr.send();
   }
 
+  // ── Fallback URLs (always point to GitHub releases page) ─────
+  var FALLBACK_URL = 'https://github.com/aindrewkwk/lbby-releases/releases/latest';
+
   // ── Render download cards ───────────────────────────────────
   function renderDownloads(release) {
-    if (!release) return;
-
     var platform = detectPlatform();
     var cards = document.querySelectorAll('.download-card');
 
     cards.forEach(function(card) {
       var p = card.getAttribute('data-platform');
-      var asset = findAsset(release.assets, p);
+      var btnEl = card.querySelector('.download-card__btn');
 
-      if (asset) {
+      if (release) {
+        var asset = findAsset(release.assets, p);
+        if (asset) {
+          var sizeEl = card.querySelector('.download-card__size');
+          if (sizeEl) sizeEl.textContent = formatSize(asset.size);
+          if (btnEl) btnEl.href = asset.browser_download_url;
+        } else if (btnEl) {
+          btnEl.href = FALLBACK_URL;
+        }
+      } else if (btnEl) {
+        // API failed — set fallback link so buttons are never dead
+        btnEl.href = FALLBACK_URL;
         var sizeEl = card.querySelector('.download-card__size');
-        var btnEl = card.querySelector('.download-card__btn');
-        if (sizeEl) sizeEl.textContent = formatSize(asset.size);
-        if (btnEl) btnEl.href = asset.browser_download_url;
+        if (sizeEl) sizeEl.textContent = 'GitHub';
       }
 
       if (p === platform) {
