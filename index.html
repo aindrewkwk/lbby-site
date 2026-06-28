@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=84be7f3">
+  <link rel="stylesheet" href="/css/style.css?v=rstudio-parity-20260628">
   <script>
     (function() {
       try {
@@ -43,6 +43,7 @@
       </a>
       <div class="nav__links">
         <a href="#games" class="nav__link" data-i18n="nav.games">Games</a>
+        <a href="#showcase" class="nav__link">Demo</a>
         <a href="#features" class="nav__link" data-i18n="nav.features">Features</a>
         <a href="#download" class="nav__link" data-i18n="nav.download">Download</a>
         <a href="#docs" class="nav__link" data-i18n="nav.docs">Docs</a>
@@ -66,6 +67,7 @@
   </nav>
   <div class="nav__dropdown" id="nav-dropdown">
     <a href="#games" data-i18n="nav.games">Games</a>
+    <a href="#showcase">Demo</a>
     <a href="#features" data-i18n="nav.features">Features</a>
     <a href="#download" data-i18n="nav.download">Download</a>
     <a href="#docs" data-i18n="nav.docs">Docs</a>
@@ -88,6 +90,14 @@
        ══════════════════════════════════════════════════════════════ -->
   <section class="hero" id="hero">
     <canvas class="hero__canvas" id="ascii-bg"></canvas>
+    <div class="site-noise" aria-hidden="true"></div>
+    <div class="scanline" aria-hidden="true"></div>
+    <div class="hero__chrome" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="hero__logo-field" aria-hidden="true">
+      <img src="/assets/lbby-app-icon-square.png" alt="">
+    </div>
     <div class="hero__content">
       <p class="hero__eyebrow" data-i18n="hero.eyebrow">Lbby by R Studio</p>
       <h1 class="hero__headline" data-i18n="hero.headline">Game servers made simple.</h1>
