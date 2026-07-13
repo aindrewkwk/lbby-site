@@ -1,17 +1,31 @@
-/**
- * Lbby ASCII Background — Canvas 2D
- * Phase 2 hero background with fBm noise density, layered characters,
- * drift animation, sine-wave flicker, mouse parallax, and theme support.
- *
- * Usage: <canvas id="ascii-bg"></canvas>
- * Events: listen for 'lbby:themechange' on document to swap color palette.
- */
 (function () {
   'use strict';
 
-  /* ── Word pools ────────────────────────────────────────────────── */
+  /* ------------------------------------------------------------------ */
+  /*  Reduced motion — draw one static frame and bail                   */
+  /* ------------------------------------------------------------------ */
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const WORDS = [
+  /* ------------------------------------------------------------------ */
+  /*  Canvas bootstrap                                                  */
+  /* ------------------------------------------------------------------ */
+  var canvas = document.getElementById('ascii-bg');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var W, H, dpr, isMobile;
+  var chars = [];
+  var mouse = { x: 0, y: 0 };
+  var smoothMouse = { x: 0, y: 0 };
+  var mouseActive = false;
+  var paused = false;
+  var time = 0;
+  var rafId = null;
+
+  /* ------------------------------------------------------------------ */
+  /*  Word / fragment pools                                             */
+  /* ------------------------------------------------------------------ */
+  var WORDS = [
     'LBBY','R STUDIO','GAME SERVER','HOSTING','MINECRAFT','TERRARIA',
     'JAVA','SERVER','WORLD','PLAY','HOST','TUNNEL','PLAYIT','MODS',
     'PLUGINS','MODPACKS','BACKUP','RESTORE','PAPER','FABRIC','FORGE',
@@ -20,7 +34,7 @@
     'CLOUDFLARE','TOKEN','DASHBOARD','CONSOLE','MULTIGAME','ONLINE','NETWORK'
   ];
 
-  const FRAGMENTS = [
+  var FRAGMENTS = [
     'server_01','world_alpha','game_node','minecraft.ready','terraria.soon',
     'tunnel_open','playit.gg','port:25565','jvm.flags','tps:20.0',
     'ram:4096','players:08','paper/build','fabric/loader','forge/modpack',
@@ -29,16 +43,14 @@
     'multi_game_host','01/LBBY','02/GAME','VN/HOST','BUILD.PLAY'
   ];
 
-  const DOTS = ['.','·','•','●','○','–','—','-'];
+  var DOTS = ['.', '·', '•', '●', '○', '–', '—', '-'];
 
-  /* ── fBm noise primitives ──────────────────────────────────────── */
-
-  // Simple integer hash → [0,1)
-  function hash(x, y) {
-    let h = (x * 374761393 + y * 668265263 + 1013904223) | 0;
-    h = (h ^ (h >> 13)) * 1274126177;
-    h = h ^ (h >> 16);
-    return (h >>> 0) / 4294967296;
+  /* ------------------------------------------------------------------ */
+  /*  Simple noise (hash-based value noise with smooth interpolation)   */
+  /* ------------------------------------------------------------------ */
+  function hash(ix, iy) {
+    var n = Math.sin(ix * 127.1 + iy * 311.7) * 43758.5453;
+    return n - Math.floor(n);
   }
 
   function lerp(a, b, t) {
@@ -49,288 +61,327 @@
     return t * t * (3 - 2 * t);
   }
 
-  // Value noise 2D
   function noise(x, y) {
-    const ix = Math.floor(x);
-    const iy = Math.floor(y);
-    const fx = smoothstep(x - ix);
-    const fy = smoothstep(y - iy);
-    const a = hash(ix, iy);
-    const b = hash(ix + 1, iy);
-    const c = hash(ix, iy + 1);
-    const d = hash(ix + 1, iy + 1);
+    var ix = Math.floor(x);
+    var iy = Math.floor(y);
+    var fx = smoothstep(x - ix);
+    var fy = smoothstep(y - iy);
+    var a = hash(ix, iy);
+    var b = hash(ix + 1, iy);
+    var c = hash(ix, iy + 1);
+    var d = hash(ix + 1, iy + 1);
     return lerp(lerp(a, b, fx), lerp(c, d, fx), fy);
   }
 
-  // Fractal Brownian Motion — 4 octaves
-  function fbm(x, y) {
-    let value = 0;
-    let amplitude = 0.5;
-    let frequency = 1;
-    for (let i = 0; i < 4; i++) {
-      value += amplitude * noise(x * frequency, y * frequency);
-      amplitude *= 0.5;
-      frequency *= 2;
+  function fbm(x, y, octaves) {
+    var val = 0;
+    var amp = 0.5;
+    var freq = 1;
+    for (var i = 0; i < octaves; i++) {
+      val += noise(x * freq, y * freq) * amp;
+      amp *= 0.5;
+      freq *= 2.0;
     }
-    return value;
+    return val;
   }
 
-  /* ── Color palettes ───────────────────────────────────────────── */
-
-  function getColors() {
-    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
-    if (theme === 'light') {
-      return {
-        dim:    'rgba(40, 40, 60, ALPHA)',
-        mid:    'rgba(60, 50, 120, ALPHA)',
-        bright: 'rgba(90, 70, 180, ALPHA)',
-      };
-    }
-    return {
-      dim:    'rgba(140, 140, 180, ALPHA)',
-      mid:    'rgba(180, 170, 255, ALPHA)',
-      bright: 'rgba(210, 200, 255, ALPHA)',
-    };
+  /* ------------------------------------------------------------------ */
+  /*  Density map                                                       */
+  /* ------------------------------------------------------------------ */
+  function densityAt(px, py) {
+    var scale = 0.018;
+    var d = fbm(px * scale, py * scale, 4);
+    d += fbm(px * scale * 0.4, py * scale * 0.4, 3) * 0.4;
+    d = d / 1.4;
+    d = smoothstep(d);
+    return d;
   }
 
-  /* ── Canvas setup ──────────────────────────────────────────────── */
-
-  const canvas = document.getElementById('ascii-bg');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  let W = 0;
-  let H = 0;
-  let chars = [];
-  let colors = getColors();
-  let mouseX = 0.5;
-  let mouseY = 0.5;
-  let targetMouseX = 0.5;
-  let targetMouseY = 0.5;
-  let animId = null;
-  let paused = false;
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const isMobile = window.innerWidth < 768;
-
-  /* ── Character object ──────────────────────────────────────────── */
-
-  function makeChar(x, y, layer, text) {
-    // Layer determines alpha range and drift speed
-    const alphaRanges = {
-      dim:    { min: 0.04, max: 0.12 },
-      mid:    { min: 0.10, max: 0.32 },
-      bright: { min: 0.30, max: 0.78 },
-    };
-    const ar = alphaRanges[layer];
-
-    return {
-      x: x,
-      y: y,
-      text: text,
-      layer: layer,
-      alpha: ar.min + Math.random() * (ar.max - ar.min),
-      baseAlpha: ar.min + Math.random() * (ar.max - ar.min),
-      vx: (Math.random() - 0.5) * (layer === 'bright' ? 0.18 : layer === 'mid' ? 0.1 : 0.04),
-      vy: (Math.random() - 0.5) * (layer === 'bright' ? 0.18 : layer === 'mid' ? 0.1 : 0.04),
-      phase: Math.random() * Math.PI * 2,
-      flickerSpeed: 0.3 + Math.random() * 0.8,
-      fontSize: layer === 'bright' ? (isMobile ? 10 : 13) : layer === 'mid' ? (isMobile ? 9 : 11) : (isMobile ? 8 : 10),
-    };
-  }
-
-  /* ── pickChar by density ───────────────────────────────────────── */
-
+  /* ------------------------------------------------------------------ */
+  /*  Character generation                                              */
+  /* ------------------------------------------------------------------ */
   function pickChar(density) {
-    if (density > 0.7) {
+    if (density > 0.70) {
       return FRAGMENTS[Math.floor(Math.random() * FRAGMENTS.length)];
     }
-    if (density > 0.35) {
+    if (density > 0.45) {
+      return WORDS[Math.floor(Math.random() * WORDS.length)];
+    }
+    if (density > 0.25) {
       return WORDS[Math.floor(Math.random() * WORDS.length)];
     }
     return DOTS[Math.floor(Math.random() * DOTS.length)];
   }
 
-  /* ── Build character grid ──────────────────────────────────────── */
+  function fontSizeFor(density, layer) {
+    var base = isMobile ? 7 : 9;
+    if (layer === 0) return base - 2;
+    if (layer === 2) return base + 1;
+    if (density > 0.65) return base + 1;
+    return base;
+  }
 
   function buildCharacters() {
     chars = [];
-    const cellW = isMobile ? 60 : 80;
-    const cellH = isMobile ? 44 : 56;
-    const cols = Math.ceil(W / cellW);
-    const rows = Math.ceil(H / cellH);
-    const noiseScale = isMobile ? 0.012 : 0.008;
-    const maxDensity = isMobile ? 0.75 : 1.0;
+    var cellSize = isMobile ? 28 : 22;
+    var cols = Math.ceil(W / cellSize);
+    var rows = Math.ceil(H / cellSize);
+    var maxDensityCells = isMobile ? cols * rows * 0.42 : cols * rows * 0.50;
 
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < cols; col++) {
-        const nx = col * noiseScale;
-        const ny = row * noiseScale;
-        const density = Math.min(fbm(nx + 1.7, ny + 3.2) * 1.2, maxDensity);
+    var ox = Math.random() * 1000;
+    var oy = Math.random() * 1000;
 
-        // Probability of placing a character scales with density
-        if (Math.random() > density * 0.6) continue;
+    var placed = 0;
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < cols; c++) {
+        var cx = c * cellSize + cellSize * 0.5;
+        var cy = r * cellSize + cellSize * 0.5;
+        var d = densityAt(cx + ox, cy + oy);
 
-        const cx = col * cellW + Math.random() * cellW;
-        const cy = row * cellH + Math.random() * cellH;
-        const text = pickChar(density);
+        var prob = d * 0.85;
+        if (placed > maxDensityCells) prob *= 0.25;
+        if (Math.random() > prob) continue;
 
-        // Assign layer based on density
-        let layer;
-        if (density > 0.7) {
-          layer = Math.random() < 0.3 ? 'bright' : 'mid';
-        } else if (density > 0.35) {
-          layer = Math.random() < 0.6 ? 'mid' : 'dim';
+        var layer;
+        var rnd = Math.random();
+        if (d > 0.62 && rnd < 0.18) {
+          layer = 2;
+        } else if (d > 0.35 && rnd < 0.55) {
+          layer = 1;
         } else {
-          layer = 'dim';
+          layer = 0;
         }
 
-        chars.push(makeChar(cx, cy, layer, text));
+        var baseAlpha;
+        if (layer === 0) baseAlpha = 0.04 + d * 0.08;
+        else if (layer === 1) baseAlpha = 0.10 + d * 0.22;
+        else baseAlpha = 0.30 + d * 0.48;
+
+        chars.push({
+          x: cx + (Math.random() - 0.5) * cellSize * 0.6,
+          y: cy + (Math.random() - 0.5) * cellSize * 0.6,
+          char: pickChar(d),
+          layer: layer,
+          baseAlpha: baseAlpha,
+          vx: (Math.random() - 0.5) * 0.12,
+          vy: (Math.random() - 0.5) * 0.06,
+          phase: Math.random() * Math.PI * 2,
+          size: fontSizeFor(d, layer),
+          density: d
+        });
+
+        placed++;
       }
     }
   }
 
-  /* ── Resize handler ────────────────────────────────────────────── */
+  /* ------------------------------------------------------------------ */
+  /*  Theme colours                                                     */
+  /* ------------------------------------------------------------------ */
+  function getColors() {
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    return {
+      dim:    isDark ? 'rgba(255,255,255,0.08)'  : 'rgba(0,0,0,0.07)',
+      mid:    isDark ? 'rgba(192,192,192,0.30)'   : 'rgba(120,120,120,0.24)',
+      bright: isDark ? 'rgba(255,255,255,0.78)'   : 'rgba(20,20,20,0.60)',
+      glow:   isDark ? 'rgba(229,34,39,0.18)'     : 'rgba(229,34,39,0.16)',
+      bg:     isDark ? '#030303'                   : '#e9e3d3'
+    };
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Dimensions & resize                                               */
+  /* ------------------------------------------------------------------ */
+  function measure() {
+    var rect = canvas.getBoundingClientRect();
+    isMobile = window.innerWidth < 768;
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = rect.width;
+    H = rect.height;
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
 
   function resize() {
-    W = canvas.parentElement.clientWidth;
-    H = canvas.parentElement.clientHeight;
-    canvas.width = W * dpr;
-    canvas.height = H * dpr;
-    canvas.style.width = W + 'px';
-    canvas.style.height = H + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    measure();
     buildCharacters();
+    if (prefersReduced) drawFrame();
   }
 
-  /* ── Draw one frame ────────────────────────────────────────────── */
-
-  function draw(timestamp) {
+  /* ------------------------------------------------------------------ */
+  /*  Draw                                                              */
+  /* ------------------------------------------------------------------ */
+  function drawFrame() {
+    var colors = getColors();
     ctx.clearRect(0, 0, W, H);
-    colors = getColors();
 
-    // Lerp mouse position
-    mouseX += (targetMouseX - mouseX) * 0.04;
-    mouseY += (targetMouseY - mouseY) * 0.04;
+    /* centre mask — dim centre so headline stays readable */
+    var cx = W * 0.5;
+    var cy = H * 0.5;
+    var maskR = Math.max(W, H) * 0.55;
+    var maskGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, maskR);
+    maskGrad.addColorStop(0, 'rgba(0,0,0,0.28)');
+    maskGrad.addColorStop(0.45, 'rgba(0,0,0,0.10)');
+    maskGrad.addColorStop(1, 'rgba(0,0,0,0)');
 
-    const parallaxX = (mouseX - 0.5) * (isMobile ? 0 : 20);
-    const parallaxY = (mouseY - 0.5) * (isMobile ? 0 : 20);
+    /* parallax offsets per layer */
+    var dx = smoothMouse.x;
+    var dy = smoothMouse.y;
+    var offsets = [
+      { x: dx * 0.01, y: dy * 0.01 },
+      { x: dx * 0.02, y: dy * 0.02 },
+      { x: dx * 0.03, y: dy * 0.03 }
+    ];
 
-    const time = timestamp * 0.001;
+    var t = time;
 
-    // Batch by font string to minimize ctx.font switches
-    const batches = new Map();
+    for (var i = 0, len = chars.length; i < len; i++) {
+      var ch = chars[i];
+      var lo = offsets[ch.layer];
 
-    for (let i = 0; i < chars.length; i++) {
-      const c = chars[i];
+      /* slow drift */
+      ch.x += ch.vx * 0.3;
+      ch.y += ch.vy * 0.2;
 
-      // Update position with drift
-      c.x += c.vx;
-      c.y += c.vy;
+      /* wrap around */
+      if (ch.x < -40) ch.x += W + 80;
+      if (ch.x > W + 40) ch.x -= W + 80;
+      if (ch.y < -40) ch.y += H + 80;
+      if (ch.y > H + 40) ch.y -= H + 80;
 
-      // Wrap around edges
-      if (c.x < -120) c.x = W + 80;
-      if (c.x > W + 120) c.x = -80;
-      if (c.y < -80) c.y = H + 60;
-      if (c.y > H + 80) c.y = -60;
+      /* wave distortion */
+      var wy = Math.sin(ch.x * 0.002 + t * 0.0003) * 2;
 
-      // Sine-wave alpha flicker
-      const flicker = Math.sin(time * c.flickerSpeed + c.phase) * 0.3;
-      const alpha = Math.max(0, Math.min(1, c.baseAlpha + flicker * c.baseAlpha));
-
-      // Parallax offset based on layer depth
-      const depth = c.layer === 'bright' ? 1.0 : c.layer === 'mid' ? 0.6 : 0.3;
-      const drawX = c.x + parallaxX * depth;
-      const drawY = c.y + parallaxY * depth;
-
-      const fontStr = c.fontSize + 'px "SF Mono","Fira Code","Cascadia Code",monospace';
-      const color = colors[c.layer].replace('ALPHA', alpha.toFixed(3));
-
-      if (!batches.has(fontStr)) {
-        batches.set(fontStr, []);
+      /* opacity flicker */
+      var flicker = Math.sin(ch.phase + t * 0.0008) * 0.10;
+      var shimmer = 0;
+      if (ch.layer === 2) {
+        shimmer = Math.sin(ch.phase * 1.7 + t * 0.0014) * 0.18;
       }
-      batches.get(fontStr).push({ text: c.text, x: drawX, y: drawY, color: color });
+      var alpha = Math.max(0, Math.min(1, ch.baseAlpha + flicker + shimmer));
+
+      /* pick colour bucket */
+      var col;
+      if (ch.layer === 0) col = colors.dim;
+      else if (ch.layer === 2) col = colors.bright;
+      else col = alpha > 0.22 ? colors.mid : colors.dim;
+
+      var px = ch.x + lo.x;
+      var py = ch.y + lo.y + wy;
+
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = col;
+      ctx.font = ch.size + 'px "JetBrains Mono","Fira Code","SF Mono",monospace';
+      ctx.fillText(ch.char, px, py);
     }
 
-    // Render batches
-    for (const [fontStr, items] of batches) {
-      ctx.font = fontStr;
-      for (let j = 0; j < items.length; j++) {
-        const item = items[j];
-        ctx.fillStyle = item.color;
-        ctx.fillText(item.text, item.x, item.y);
-      }
+    ctx.globalAlpha = 1;
+
+    /* cursor glow (desktop only) */
+    if (mouseActive && !isMobile) {
+      var gx = smoothMouse.x + W * 0.5;
+      var gy = smoothMouse.y + H * 0.5;
+      var glowR = isMobile ? 90 : 140;
+      var glow = ctx.createRadialGradient(gx, gy, 0, gx, gy, glowR);
+      glow.addColorStop(0, colors.glow);
+      glow.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = glow;
+      ctx.fillRect(gx - glowR, gy - glowR, glowR * 2, glowR * 2);
     }
+
+    /* re-apply centre mask */
+    ctx.fillStyle = maskGrad;
+    ctx.fillRect(0, 0, W, H);
   }
 
-  /* ── Animation loop ────────────────────────────────────────────── */
+  /* ------------------------------------------------------------------ */
+  /*  Animation loop                                                    */
+  /* ------------------------------------------------------------------ */
+  function tick(ts) {
+    if (paused) { rafId = requestAnimationFrame(tick); return; }
+    time = ts || 0;
 
-  function loop(timestamp) {
-    if (paused) return;
-    draw(timestamp);
-    animId = requestAnimationFrame(loop);
+    /* lerp mouse */
+    smoothMouse.x += (mouse.x - smoothMouse.x) * 0.06;
+    smoothMouse.y += (mouse.y - smoothMouse.y) * 0.06;
+
+    drawFrame();
+    rafId = requestAnimationFrame(tick);
   }
 
-  function startAnimation() {
-    if (prefersReducedMotion) {
-      // Draw one static frame and stop
-      draw(0);
-      return;
-    }
-    if (animId) cancelAnimationFrame(animId);
-    paused = false;
-    animId = requestAnimationFrame(loop);
+  /* ------------------------------------------------------------------ */
+  /*  Mouse tracking                                                    */
+  /* ------------------------------------------------------------------ */
+  function onMouseMove(e) {
+    var rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left - W * 0.5;
+    mouse.y = e.clientY - rect.top  - H * 0.5;
+    mouseActive = true;
   }
 
-  function pauseAnimation() {
-    paused = true;
-    if (animId) {
-      cancelAnimationFrame(animId);
-      animId = null;
-    }
+  function onMouseLeave() {
+    mouseActive = false;
+    mouse.x = 0;
+    mouse.y = 0;
   }
 
-  /* ── Event listeners ───────────────────────────────────────────── */
+  /* ------------------------------------------------------------------ */
+  /*  Visibility observer — pause when offscreen                        */
+  /* ------------------------------------------------------------------ */
+  var observer;
+  function observeVisibility() {
+    if (!('IntersectionObserver' in window)) return;
+    observer = new IntersectionObserver(function (entries) {
+      paused = !entries[0].isIntersecting;
+    }, { threshold: 0.05 });
+    observer.observe(canvas);
+  }
 
-  window.addEventListener('resize', function () {
-    // Debounce resize
-    clearTimeout(window._asciiResizeTimer);
-    window._asciiResizeTimer = setTimeout(resize, 150);
-  });
-
-  // Mouse parallax (desktop only)
-  if (!isMobile) {
-    document.addEventListener('mousemove', function (e) {
-      targetMouseX = e.clientX / window.innerWidth;
-      targetMouseY = e.clientY / window.innerHeight;
+  /* ------------------------------------------------------------------ */
+  /*  Theme change watcher                                              */
+  /* ------------------------------------------------------------------ */
+  var themeObserver;
+  function watchTheme() {
+    if (!('MutationObserver' in window)) return;
+    themeObserver = new MutationObserver(function () {
+      /* colours are read live each frame — nothing extra needed */
+    });
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
     });
   }
 
-  // Visibility change: pause when tab hidden
-  document.addEventListener('visibilitychange', function () {
-    if (document.hidden) {
-      pauseAnimation();
-    } else {
-      startAnimation();
+  /* ------------------------------------------------------------------ */
+  /*  Init                                                              */
+  /* ------------------------------------------------------------------ */
+  function init() {
+    measure();
+    buildCharacters();
+    observeVisibility();
+    watchTheme();
+
+    /* mouse events — desktop only */
+    if (!isMobile) {
+      canvas.addEventListener('mousemove', onMouseMove, { passive: true });
+      canvas.addEventListener('mouseleave', onMouseLeave, { passive: true });
     }
-  });
 
-  // Theme change event
-  document.addEventListener('lbby:themechange', function () {
-    colors = getColors();
-  });
+    window.addEventListener('resize', resize, { passive: true });
 
-  // Also watch data-theme attribute directly (fallback)
-  const observer = new MutationObserver(function () {
-    colors = getColors();
-  });
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['data-theme'],
-  });
+    if (prefersReduced) {
+      /* single static frame */
+      drawFrame();
+    } else {
+      rafId = requestAnimationFrame(tick);
+    }
+  }
 
-  /* ── Init ──────────────────────────────────────────────────────── */
-
-  resize();
-  startAnimation();
+  /* start when DOM is ready */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();

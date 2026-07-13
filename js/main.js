@@ -1,240 +1,205 @@
-/**
- * Lbby Website — Main JavaScript
- * Phase 5: Core interactivity and i18n
- */
-
-(function () {
+// ── Lbby Website — Main JavaScript ─────────────────────────────
+// Theme toggle, language toggle, scroll reveal, nav behavior
+// Aligned with rstudio.live interaction patterns
+// ─────────────────────────────────────────────────────────────
+(function() {
   'use strict';
 
-  /* ================================================================
-     1. Theme
-     ================================================================ */
-  function initTheme() {
-    const toggle = document.getElementById('theme-toggle');
-    if (!toggle) return;
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var isMobile = window.innerWidth < 768;
+  var html = document.documentElement;
 
-    // Restore saved preference
-    const saved = localStorage.getItem('lbby-theme');
-    if (saved) {
-      document.documentElement.setAttribute('data-theme', saved);
+  /* ── Theme Toggle ────────────────────────────────────────────── */
+  var themeToggle = document.getElementById('theme-toggle');
+  var savedTheme = null;
+  try { savedTheme = localStorage.getItem('lbby-theme'); } catch(e) {}
+  var currentTheme = savedTheme || 'dark';
+
+  function setTheme(theme) {
+    currentTheme = theme;
+    html.setAttribute('data-theme', theme);
+    try { localStorage.setItem('lbby-theme', theme); } catch(e) {}
+    if (themeToggle) {
+      themeToggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
     }
+    document.dispatchEvent(new CustomEvent('lbby:themechange', { detail: { theme: theme } }));
+  }
 
-    updateThemeAria();
-    updateThemeFavicon();
+  setTheme(currentTheme);
 
-    toggle.addEventListener('click', function () {
-      const current = document.documentElement.getAttribute('data-theme') || 'dark';
-      const next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('lbby-theme', next);
-      updateThemeAria();
-      updateThemeFavicon();
-      document.dispatchEvent(new CustomEvent('lbby:themechange', { detail: { theme: next } }));
+  if (themeToggle) {
+    themeToggle.addEventListener('click', function() {
+      setTheme(currentTheme === 'light' ? 'dark' : 'light');
     });
   }
 
-  function updateThemeAria() {
-    const toggle = document.getElementById('theme-toggle');
-    if (!toggle) return;
-    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
-    toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
-  }
+  /* ── Nav ─────────────────────────────────────────────────────── */
+  var nav = document.getElementById('nav');
+  var hamburger = document.getElementById('hamburger');
+  var dropdown = document.getElementById('nav-dropdown');
 
-  function updateThemeFavicon() {
-    // favicon stays as the app icon PNG — no theme switching needed
-  }
+  window.addEventListener('scroll', function() {
+    if (nav) nav.classList.toggle('scrolled', window.scrollY > 50);
+  }, { passive: true });
 
-  /* ================================================================
-     2. Nav scroll state
-     ================================================================ */
-  function initNav() {
-    const nav = document.getElementById('nav');
-    if (!nav) return;
-
-    function onScroll() {
-      if (window.scrollY > 10) {
-        nav.classList.add('scrolled');
-      } else {
-        nav.classList.remove('scrolled');
-      }
-    }
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll(); // run once on load
-  }
-
-  /* ================================================================
-     3. Hamburger / mobile nav
-     ================================================================ */
-  function initHamburger() {
-    const btn = document.getElementById('hamburger');
-    const dropdown = document.getElementById('nav-dropdown');
-    if (!btn || !dropdown) return;
-
-    btn.addEventListener('click', function () {
-      const expanded = btn.getAttribute('aria-expanded') === 'true';
-      btn.setAttribute('aria-expanded', String(!expanded));
+  if (hamburger && dropdown) {
+    hamburger.addEventListener('click', function() {
+      var expanded = hamburger.getAttribute('aria-expanded') === 'true';
+      hamburger.setAttribute('aria-expanded', String(!expanded));
       dropdown.classList.toggle('open');
+      document.body.classList.toggle('nav-open', !expanded);
     });
-
-    // Close when a link inside is clicked
-    dropdown.addEventListener('click', function (e) {
-      if (e.target.closest('a')) {
-        btn.setAttribute('aria-expanded', 'false');
+    // Close on link click
+    dropdown.querySelectorAll('a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        hamburger.setAttribute('aria-expanded', 'false');
         dropdown.classList.remove('open');
-      }
+        document.body.classList.remove('nav-open');
+      });
     });
-
     // Close on Escape
-    document.addEventListener('keydown', function (e) {
+    document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape' && dropdown.classList.contains('open')) {
-        btn.setAttribute('aria-expanded', 'false');
+        hamburger.setAttribute('aria-expanded', 'false');
         dropdown.classList.remove('open');
+        document.body.classList.remove('nav-open');
       }
     });
   }
 
-  /* ================================================================
-     4. Smooth scroll for anchor links
-     ================================================================ */
-  function initSmoothScroll() {
-    document.addEventListener('click', function (e) {
-      const link = e.target.closest('a[href^="#"]');
-      if (!link) return;
+  // Active link tracking
+  var sections = document.querySelectorAll('section[id]');
+  var navLinks = document.querySelectorAll('.nav__link[href^="#"]');
 
-      const id = link.getAttribute('href');
-      if (!id || id === '#') return;
-
-      const target = document.querySelector(id);
-      if (!target) return;
-
-      e.preventDefault();
-      target.scrollIntoView({ behavior: 'smooth' });
-
-      // Update URL without reload
-      if (history.pushState) {
-        history.pushState(null, '', id);
+  function updateActiveLink() {
+    var scrollY = window.scrollY + 120;
+    sections.forEach(function(s) {
+      if (scrollY >= s.offsetTop && scrollY < s.offsetTop + s.offsetHeight) {
+        navLinks.forEach(function(l) {
+          l.classList.toggle('active', l.getAttribute('href') === '#' + s.id);
+        });
       }
     });
   }
+  window.addEventListener('scroll', updateActiveLink, { passive: true });
+  updateActiveLink();
 
-  /* ================================================================
-     5. Reveal-on-scroll animations
-     ================================================================ */
-  function initReveal() {
-    const elements = document.querySelectorAll('.reveal');
-    if (!elements.length) return;
-
-    // Respect reduced-motion preference
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      elements.forEach(function (el) { el.classList.add('visible'); });
-      return;
-    }
-
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-
-    elements.forEach(function (el) { observer.observe(el); });
+  /* ── Kinetic page variables ─────────────────────────────────── */
+  function updateKineticVars() {
+    var max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    var progress = Math.min(1, Math.max(0, window.scrollY / max));
+    html.style.setProperty('--scroll-y', String(Math.round(window.scrollY)));
+    html.style.setProperty('--scroll-progress', progress.toFixed(4));
   }
 
-  /* ================================================================
-     6. Active nav link highlighting
-     ================================================================ */
-  function initActiveNav() {
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav__link');
-    if (!sections.length || !navLinks.length) return;
-
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          var id = entry.target.getAttribute('id');
-          navLinks.forEach(function (link) {
-            link.classList.toggle('active', link.getAttribute('href') === '#' + id);
-          });
-        }
-      });
-    }, { threshold: 0.3 });
-
-    sections.forEach(function (section) { observer.observe(section); });
+  if (!reducedMotion) {
+    updateKineticVars();
+    window.addEventListener('scroll', updateKineticVars, { passive: true });
+    window.addEventListener('resize', updateKineticVars);
   }
 
-  /* ================================================================
-     7 & 8. Internationalisation (i18n)
-     ================================================================ */
-  function initI18n() {
-    var saved = localStorage.getItem('lbby-lang') || 'en';
-    setLang(saved);
+  /* ── Language Toggle ─────────────────────────────────────────── */
+  var currentLang = 'en';
+  var langToggle = document.getElementById('lang-toggle');
+  var langLabel = langToggle ? langToggle.querySelector('.lang-label') : null;
 
-    var toggle = document.getElementById('lang-toggle');
-    if (!toggle) return;
-
-    toggle.addEventListener('click', function () {
-      var current = localStorage.getItem('lbby-lang') || 'en';
-      var next = current === 'en' ? 'vi' : 'en';
-      setLang(next);
-    });
+  function getNested(obj, path) {
+    return path.split('.').reduce(function(acc, key) {
+      return acc && acc[key] !== undefined ? acc[key] : null;
+    }, obj);
   }
 
   function setLang(lang) {
-    localStorage.setItem('lbby-lang', lang);
-    document.documentElement.setAttribute('lang', lang);
+    try { localStorage.setItem('lbby-lang', lang); } catch(e) {}
+    html.lang = lang === 'vi' ? 'vi' : 'en';
 
     var dict = lang === 'vi' ? window.LBBY_I18N_VI : window.LBBY_I18N_EN;
     if (!dict) return;
 
-    // Helper: resolve nested key like "meta.title" → dict.meta.title
-    function get(obj, path) {
-      return path.split('.').reduce(function (acc, key) {
-        return acc && acc[key] !== undefined ? acc[key] : null;
-      }, obj);
-    }
-
-    // textContent
-    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+    document.querySelectorAll('[data-i18n]').forEach(function(el) {
       var key = el.getAttribute('data-i18n');
-      var val = get(dict, key);
+      var val = getNested(dict, key);
       if (val !== null) el.textContent = val;
     });
 
-    // innerHTML (for rich text)
-    document.querySelectorAll('[data-i18n-html]').forEach(function (el) {
+    document.querySelectorAll('[data-i18n-html]').forEach(function(el) {
       var key = el.getAttribute('data-i18n-html');
-      var val = get(dict, key);
+      var val = getNested(dict, key);
       if (val !== null) el.innerHTML = val;
     });
 
-    // Language label
-    var label = document.querySelector('.lang-label');
-    if (label) label.textContent = lang === 'vi' ? 'VI' : 'EN';
+    if (langLabel) langLabel.textContent = lang === 'vi' ? 'VI' : 'EN';
 
-    // Document metadata
     if (dict.meta) {
       if (dict.meta.title) document.title = dict.meta.title;
       var metaDesc = document.querySelector('meta[name="description"]');
       if (metaDesc && dict.meta.desc) metaDesc.setAttribute('content', dict.meta.desc);
     }
 
-    // Dispatch event
     document.dispatchEvent(new CustomEvent('lbby:langchange', { detail: { lang: lang } }));
   }
 
-  /* ================================================================
-     Bootstrap on DOMContentLoaded
-     ================================================================ */
-  document.addEventListener('DOMContentLoaded', function () {
-    initTheme();
-    initNav();
-    initHamburger();
-    initSmoothScroll();
-    initReveal();
-    initActiveNav();
-    initI18n();
+  if (langToggle) {
+    langToggle.addEventListener('click', function() {
+      var current = localStorage.getItem('lbby-lang') || 'en';
+      setLang(current === 'en' ? 'vi' : 'en');
+    });
+  }
+
+  /* ── Smooth scroll for anchor links ──────────────────────────── */
+  document.addEventListener('click', function(e) {
+    var link = e.target.closest('a[href^="#"]');
+    if (!link) return;
+    var id = link.getAttribute('href');
+    if (!id || id === '#') return;
+    var target = document.querySelector(id);
+    if (!target) return;
+    e.preventDefault();
+    target.scrollIntoView({ behavior: 'smooth' });
+    if (history.pushState) {
+      history.pushState(null, '', id);
+    }
+  });
+
+  /* ── Scroll Reveal ───────────────────────────────────────────── */
+  if (!reducedMotion) {
+    var revealEls = document.querySelectorAll('.reveal, .reveal-stagger');
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+    revealEls.forEach(function(el) { obs.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal, .reveal-stagger').forEach(function(el) {
+      el.classList.add('visible');
+    });
+  }
+
+  /* ── Hero Parallax (desktop only) ────────────────────────────── */
+  if (!reducedMotion && !isMobile) {
+    var heroContent = document.querySelector('.hero__content');
+    var hero = document.querySelector('.hero');
+    if (heroContent && hero) {
+      hero.addEventListener('mousemove', function(e) {
+        var r = hero.getBoundingClientRect();
+        var x = (e.clientX - r.left - r.width / 2) / r.width;
+        var y = (e.clientY - r.top - r.height / 2) / r.height;
+        heroContent.style.transform = 'translate(' + (x * -4) + 'px, ' + (y * -4) + 'px)';
+      });
+      hero.addEventListener('mouseleave', function() {
+        heroContent.style.transform = 'translate(0,0)';
+        heroContent.style.transition = 'transform 0.4s ease-out';
+        setTimeout(function() { heroContent.style.transition = ''; }, 400);
+      });
+    }
+  }
+
+  /* ── Bootstrap ───────────────────────────────────────────────── */
+  document.addEventListener('DOMContentLoaded', function() {
+    var current = localStorage.getItem('lbby-lang') || 'en';
+    setLang(current);
   });
 })();
