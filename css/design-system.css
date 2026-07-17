@@ -999,8 +999,8 @@ img { max-width: 100%; height: auto; }
 
 /* ── Language Toggle ─────────────────────────────────────────────────── */
 .lang-toggle {
-  width: 39px;
-  height: 39px;
+  width: 36px;
+  height: 36px;
   margin-left: 5px;
   border-radius: 9px;
   border: 1px solid rgba(255, 255, 255, 0.12);

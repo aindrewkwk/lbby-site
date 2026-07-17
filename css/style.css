@@ -337,7 +337,7 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
+  width: 36px;
   height: 32px;
   border-radius: var(--radius-sm);
   border: 1px solid transparent;
@@ -371,7 +371,7 @@ body::before {
   font-weight: 600;
   letter-spacing: 0.05em;
   padding: 4px 8px;
-  min-width: 32px;
+  min-width: 36px;
   text-align: center;
 }
 
@@ -569,6 +569,20 @@ body::before {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+  
+  .hero__strip {
+    animation: none;
+  }
+  
+  .scanline {
+    display: none;
+  }
+  
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
